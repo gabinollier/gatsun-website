@@ -82,7 +82,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black opacity-70 z-1 motion-bg-in-background"></div>
         <div className="relative z-10 px-4 motion-blur-in-sm motion-duration-1500 motion-preset-slide-down-md">
           <h1 className="motion-ty text-5xl md:text-7xl font-bold text-white mb-4">
-            Votre studio d'enregistrement à Lyon
+            Votre studio d&apos;enregistrement à Lyon
           </h1>
           <p className="text-xl text-slate-300 mb-8 ">
             Donnez vie à votre musique, à un tarif étudiant.
@@ -103,13 +103,13 @@ export default function Home() {
           <div className="intersect:motion-preset-slide-right-sm">
             <h3 className="text-2xl font-semibold mb-6 ">Le studio de musique par des étudiants</h3>
             <p className="mb-6 ">
-              Gatsun est un <span className="font-bold text-orange-500">studio d'enregistrement</span> et de composition unique, géré par une équipe passionnée d'étudiants de l'INSA Lyon. Notre mission : offrir <span className="font-bold text-orange-500">un espace créatif de qualité accessible à tous</span>, en particulier aux étudiants et aux jeunes artistes.
+              Gatsun est un <span className="font-bold text-orange-500">studio d&apos;enregistrement</span> et de composition unique, géré par une équipe passionnée d&apos;étudiants de l&apos;INSA Lyon. Notre mission : offrir <span className="font-bold text-orange-500">un espace créatif de qualité accessible à tous</span>, en particulier aux étudiants et aux jeunes artistes.
             </p>
             <p className="font-semibold ">Nos points forts :</p>
             <ul className="list-none mt-2 space-y-1">
               <li className="ml-4">✓ Encadrement par des passionnés</li>
               <li className="ml-4">✓ Tarifs attractifs adaptés aux budgets étudiants</li>
-              <li className="ml-4">✓ Matériel d'enregistrement d'exellente qualité</li>
+              <li className="ml-4">✓ Matériel d&apos;enregistrement d&apos;exellente qualité</li>
               <li className="ml-4">✓ Ambiance conviviale et créative</li>
             </ul>
           </div>
@@ -226,7 +226,7 @@ export default function Home() {
             <div className="intersect:motion-preset-slide-right-sm">
               <h3 className="text-2xl font-semibold mb-6">Comment prendre rendez-vous ?</h3>
 
-                <p className="mb-2">Pour réserver un créneau ou pour n'importe quelle question, vous pouvez nous contacter par e-mail, par Instagram, ou via le formulaire ci-contre. </p>
+                <p className="mb-2">Pour réserver un créneau ou pour n&apos;importe quelle question, vous pouvez nous contacter par e-mail, par Instagram, ou via le formulaire ci-contre. </p>
                 <p className="mb-2">Décrivez-nous rapidement votre projet et vos disponibilités, et nous vous répondrons le plus rapidement possible !</p>
                 <p className="mb-2">Étant une association étudiante, les créneaux sont de préférence les jeudis après-midi, les week-ends ou les soirs après 18h.</p>
 
@@ -304,7 +304,7 @@ export default function Home() {
       <footer className="bg-slate-900 py-8 px-4 text-center text-slate-500 text-sm">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} Gatsun. Tous droits réservés.</p>
-           <p>Développé par des étudiants de l'INSA Lyon.</p>
+           <p>Développé par des étudiants de l&apos;INSA Lyon.</p>
         </div>
       </footer>
     </main>
