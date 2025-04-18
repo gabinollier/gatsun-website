@@ -18,7 +18,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+      className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 w-full px-6 rounded-full transition duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {pending ? 'Envoi en cours...' : 'Envoyer la demande'}
     </button>
@@ -31,13 +31,13 @@ export default function Home() {
   return (
     <main className="bg-slate-900 text-slate-100 font-sans">
       {/* Header Placeholder - Ideally, this would be in layout.tsx */}
-      <header className="fixed left-0 right-0 top-0 z-50 bg-slate-700/65 backdrop-blur-xl shadow-md px-20">
+      <header className="fixed left-0 right-0 top-0 z-50 bg-slate-700/65 backdrop-blur-xl shadow-md px-8 md:px-20">
         <nav className="container mx-auto h-20 py-1 flex justify-between items-center">
           <a className="h-full flex items-center gap-4 " href="#hero">
             <Image src="/logo.png" alt="Gatsun Logo" width={64} height={64} className="translate-y-0.5"/>
-            <span className="text-2xl font-bold text-white">Gatsun</span>
+            <span className="text-2xl font-bold text-white hidden md:inline">Gatsun</span>
           </a>
-          <div className="h-full flex flex-row gap-10 justify-center items-center">
+          <div className="h-full flex flex-row gap-4 md:gap-10 justify-center items-center">
           <a
             href="#about"
             className="h-full flex items-center hover:text-orange-400 transition duration-100 active:text-white "
@@ -89,7 +89,7 @@ export default function Home() {
           </p>
           <a
             href="#contact"
-            className="inline-block bg-orange-600 active:bg-orange-700 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 hover:-translate-y-1 active:translate-y-0"
+            className="inline-block bg-orange-600 active:bg-orange-700 text-white md-w-auto w-full font-bold py-3 px-8 rounded-full text-lg transition duration-300 hover:-translate-y-1 active:translate-y-0"
           >
             Réserver un créneau
           </a>
@@ -97,10 +97,10 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-20 container mx-auto scroll-mt-20">
+      <section id="about" className="py-20 px-8 md:px-20 container mx-auto scroll-mt-20">
         <h2 className="text-4xl font-bold text-center mb-12 text-orange-500 ">À Propos de Gatsun</h2>
         <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div className="intersect:motion-preset-slide-right-sm">
+          <div className="md:intersect:motion-preset-slide-right-sm">
             <h3 className="text-2xl font-semibold mb-6 ">Le studio de musique par des étudiants</h3>
             <p className="mb-6 ">
               Gatsun est un <span className="font-bold text-orange-500">studio d&apos;enregistrement</span> et de composition unique, géré par une équipe passionnée d&apos;étudiants de l&apos;INSA Lyon. Notre mission : offrir <span className="font-bold text-orange-500">un espace créatif de qualité accessible à tous</span>, en particulier aux étudiants et aux jeunes artistes.
@@ -113,38 +113,38 @@ export default function Home() {
               <li className="ml-4">✓ Ambiance conviviale et créative</li>
             </ul>
           </div>
-          <div className="intersect:motion-preset-slide-left-sm">
+          <div className="md:intersect:motion-preset-slide-left-sm">
             <ImageCarousel images={["/carousel_3.jpg", "/carousel_2.jpg", "/carousel_1.jpg"]} />
           </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 px-20 bg-slate-800 scroll-mt-20">
+      <section id="services" className="py-20 px-8 md:px-20 bg-slate-800 scroll-mt-20">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12 text-orange-500">Nos Services</h2>
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-8 text-center">
-            <div className="bg-slate-700/65 intersect:motion-preset-slide-up-sm backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+            <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🎤</div>
               <h3 className="text-xl font-semibold mb-2">Enregistrement</h3>
               <p className="text-sm text-slate-400">Prise de son voix et instruments en cabine traitée</p>
             </div>
-             <div className="bg-slate-700/65 intersect:motion-preset-slide-up-sm motion-delay-100 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+             <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md motion-delay-100 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🎚️</div>
               <h3 className="text-xl font-semibold mb-2">Mixage</h3>
               <p className="text-sm text-slate-400">Équilibrage et traitement de votre projet pour un rendu qualitatif</p>
             </div>
-             <div className="bg-slate-700/65 intersect:motion-preset-slide-up-sm motion-delay-200 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+             <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md motion-delay-200 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🎧</div>
               <h3 className="text-xl font-semibold mb-2">Mastering</h3>
               <p className="text-sm text-slate-400">Finalisation de votre morceau pour une diffusion optimale sur les plateformes</p>
             </div>
-             <div className="bg-slate-700/65 intersect:motion-preset-slide-up-sm motion-delay-300 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+             <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md motion-delay-300 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🎼</div>
               <h3 className="text-xl font-semibold mb-2">Composition</h3>
               <p className="text-sm text-slate-400">Aide à la création musicale et arrangements - Mise à disposition de notre clavier MIDI</p>
             </div>
-             <div className="bg-slate-700/65 intersect:motion-preset-slide-up-sm motion-delay-400 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+             <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md motion-delay-400 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🧑‍🏫</div>
               <h3 className="text-xl font-semibold mb-2">Conseils</h3>
               <p className="text-sm text-slate-400">Accompagnement personnalisé, pour vous permettre de donner le meilleur de vous-mêmes</p>
@@ -155,9 +155,38 @@ export default function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-20 container mx-auto scroll-mt-20"> {/* Added scroll-mt-20 */}
+      <section id="pricing" className="py-20 px-8 md:px-20 container mx-auto scroll-mt-20"> {/* Added scroll-mt-20 */}
         <h2 className="text-4xl font-bold text-center mb-12 text-orange-500">Nos Tarifs</h2>
-        <div className="overflow-x-auto">
+
+        {/* Pricing Cards for Mobile */}
+        <div className="block md:hidden space-y-6">
+          {/* Enregistrement Card */}
+          <div className="bg-slate-800 rounded-lg p-6 shadow-md">
+            <h3 className="text-xl font-semibold mb-3 text-white">Enregistrement</h3>
+            <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 15 €/h</p>
+            <p className="mb-4 text-orange-400"><span className="font-semibold">Tarif VAvantage*:</span> 8 €/h</p>
+            <p className="text-sm text-slate-400">Enregistrement de votre morceau au studio, avec un ingé son étudiant.</p>
+          </div>
+
+          {/* Podcast Card */}
+          <div className="bg-slate-800 rounded-lg p-6 shadow-md">
+            <h3 className="text-xl font-semibold mb-3 text-white">Podcast</h3>
+            <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 7,50 €/demi-heure</p>
+            <p className="mb-4 text-orange-400"><span className="font-semibold">Tarif VAvantage*:</span> 4 €/demi-heure</p>
+            <p className="text-sm text-slate-400">Idéal pour une excellente qualité sonore pour votre podcast.</p>
+          </div>
+
+          {/* Mixage / Mastering Card */}
+          <div className="bg-slate-800 rounded-lg p-6 shadow-md">
+            <h3 className="text-xl font-semibold mb-3 text-white">Mixage / Mastering</h3>
+            <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 10 €**</p>
+            <p className="mb-4 text-orange-400"><span className="font-semibold">Tarif VAvantage*:</span> 20 €**</p>
+            <p className="text-sm text-slate-400">Finalisation de votre morceau par un de nos membres.</p>
+          </div>
+        </div>
+
+        {/* Pricing Table for Medium and Larger Screens */}
+        <div className="hidden md:block overflow-x-auto"> {/* Hide on small screens, show on md+ */}
           <table className="w-full min-w-[600px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-800">
@@ -170,8 +199,8 @@ export default function Home() {
             <tbody>
               <tr className="hover:bg-slate-800/50">
                 <td className="p-4 border border-slate-700 font-semibold">Enregistrement</td>
-                <td className="p-4 border border-slate-700"><span className="intersect:motion-scale-loop-100 intersect:motion-loop-twice inline-block">15 €/h</span></td>
-                <td className="p-4 border border-slate-700 text-orange-400"><span className="intersect:motion-scale-loop-100 intersect:motion-loop-twice inline-block">8 €/h</span></td>
+                <td className="p-4 border border-slate-700"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">15 €/h</span></td>
+                <td className="p-4 border border-slate-700 text-orange-400"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">8 €/h</span></td>
                 <td className="p-4 border border-slate-700">Enregistrement de votre morceau au studio, avec un ingé son étudiant</td>
               </tr>
               <tr className="hover:bg-slate-800/50">
@@ -203,7 +232,7 @@ export default function Home() {
         <div className="text-center mt-8">
            <a
             href="#contact"
-            className="bg-orange-600 active:bg-orange-700 inline-block hover:-translate-y-1 active:translate-y-0 text-white font-bold py-3 px-8 rounded-full transition duration-300"
+            className="bg-orange-600 active:bg-orange-700 w-full md:w-auto inline-block hover:-translate-y-1 active:translate-y-0 text-white font-bold py-3 px-8 rounded-full transition duration-300"
           >
             Demander un devis personnalisé
           </a>
@@ -216,19 +245,19 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-20 bg-slate-800 scroll-mt-20"> {/* Added scroll-mt-20 */}
+      <section className="py-20 px-8 md:px-20 bg-slate-800 scroll-mt-20"> {/* Added scroll-mt-20 */}
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12 text-orange-500">Contact & Réservation</h2>
 
           <div className="grid md:grid-cols-2 gap-16 mt-10">
 
             {/* Contact Info & Map */}
-            <div className="intersect:motion-preset-slide-right-sm">
+            <div className="md:intersect:motion-preset-slide-right-sm">
               <h3 className="text-2xl font-semibold mb-6">Comment prendre rendez-vous ?</h3>
 
-                <p className="mb-2">Pour réserver un créneau ou pour n&apos;importe quelle question, vous pouvez nous contacter par e-mail, par Instagram, ou via le formulaire ci-contre. </p>
-                <p className="mb-2">Décrivez-nous rapidement votre projet et vos disponibilités, et nous vous répondrons le plus rapidement possible !</p>
-                <p className="mb-2">Étant une association étudiante, les créneaux sont de préférence les jeudis après-midi, les week-ends ou les soirs après 18h.</p>
+                <p className="mb-4">Pour réserver un créneau ou pour n&apos;importe quelle question, vous pouvez nous contacter par <span className="font-bold text-orange-500">e-mail</span>, par <span className="font-bold text-orange-500">Instagram</span>, ou via le <span className="font-bold text-orange-500">formulaire</span> de ce site. </p>
+                <p className="mb-4">Décrivez-nous rapidement votre projet et vos disponibilités, et nous vous répondrons le plus rapidement possible !</p>
+                <p className="mb-4">Étant une association étudiante, les créneaux sont de préférence les jeudis après-midi, les week-ends ou les soirs après 18h.</p>
 
                 
 
@@ -249,8 +278,8 @@ export default function Home() {
                <a href="https://www.google.com/maps/place/Studio+Gatsun/@45.7881387,4.8636957,4301m/data=!3m1!1e3!4m6!3m5!1s0x47f4c1f6e749a53f:0xeeca76a88d567bf3!8m2!3d45.7840159!4d4.8799093!16s%2Fg%2F11gtg89kh4?hl=fr&entry=ttu&g_ep=EgoyMDI1MDQxNC4xIKXMDSoASAFQAw%3D%3D" className="mt-2 text-sm text-slate-400">5 Rue des Sciences, 69100 Villeurbanne (INSA Lyon - Campus LyonTech La Doua)</a>
             </div>
 
-            <div className="intersect:motion-preset-slide-left-sm">
-              <h3 className="text-2xl font-semibold mb-6">Nous Contacter</h3>
+            <div className="md:intersect:motion-preset-slide-left-sm">
+              <h3 id="contact" className="text-2xl font-semibold mb-6 scroll-mt-32 md:scroll-mt-54">Nous Contacter</h3>
 
               <div className="flex items-center gap-4 mb-2"> 
                 <Image src="/mail.svg" alt="Email" width={32} height={32}/>
