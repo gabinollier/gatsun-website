@@ -18,7 +18,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 w-full px-6 rounded-full transition duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+      className="bg-orange-600 active:bg-orange-700 hover:-translate-y-1 text-white font-bold py-3 w-full px-6 rounded-full transition duration-300 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {pending ? 'Envoi en cours...' : 'Envoyer la demande'}
     </button>
@@ -89,7 +89,7 @@ export default function Home() {
           </p>
           <a
             href="#contact"
-            className="inline-block bg-orange-600 active:bg-orange-700 text-white md-w-auto w-full font-bold py-3 px-8 rounded-full text-lg transition duration-300 hover:-translate-y-1 active:translate-y-0"
+            className="relative overflow-hidden inline-block bg-orange-600 active:bg-orange-700 text-white md:w-auto w-full font-bold py-3 px-8 rounded-full text-lg transition duration-300 hover:-translate-y-1 active:translate-y-0 shadow-lg shadow-orange-600/40 before:content-[''] before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:skew-x-[-25deg] hover:before:translate-x-full before:transition-transform before:duration-1000"
           >
             Réserver un créneau
           </a>
@@ -114,7 +114,7 @@ export default function Home() {
             </ul>
           </div>
           <div className="md:intersect:motion-preset-slide-left-sm">
-            <ImageCarousel images={["/carousel_5.jpg", "/carousel_4.jpg", "/carousel_1.jpg", "/carousel_6.jpg", "/carousel_2.jpg", "/carousel_3.jpg"]} />
+            <ImageCarousel images={["/carousel_5.jpg", "/carousel_4.jpg", "/carousel_1.jpg", "/carousel_6.jpg", "/carousel_2.jpg"]} />
           </div>
         </div>
       </section>
@@ -239,7 +239,7 @@ export default function Home() {
         </div>
 
 
-        <p className="mt-12 text-sm text-slate-400">*Tarif applicable sur présentation de la carte VAvantage uniquement.</p>
+        <p className="mt-12 text-sm text-slate-400">*Tarif applicable sur présentation de la carte VAvantage de l'INSA Lyon uniquement.</p>
         <p className="text-sm text-slate-400">**Tarif indicatif pour un morceau.</p>
 
       </section>
@@ -265,7 +265,7 @@ export default function Home() {
                 {/* Google Maps Embed */}
                 <div className="h-64 rounded-xl overflow-hidden"> 
                   <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19847.53917624257!2d4.856409244244502!3d45.77915090235349!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4c1f6e749a53f%3A0xeeca76a88d567bf3!2sStudio%20Gatsun!5e1!3m2!1sfr!2sfr!4v1744914392730!5m2!1sfr!2sfr" 
+                      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11129.367391309086!2d4.873030729179708!3d45.78437872623983!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47f4c1f6e749a53f%3A0xeeca76a88d567bf3!2sStudio%20Gatsun!5e0!3m2!1sfr!2sfr!4v1744979927284!5m2!1sfr!2sfr" 
                       width="100%"
                       height="100%"
                       style={{ border: 0 }}

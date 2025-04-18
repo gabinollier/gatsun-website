@@ -13,7 +13,7 @@ interface ImageCarouselProps {
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, options }) => {
   const [emblaRef] = useEmblaCarousel(
     { loop: true, ...options },
-    [Autoplay({ delay: 3000 })] // Add Autoplay plugin with 3-second delay
+    [Autoplay({ delay: 5000 })] // Add Autoplay plugin with 3-second delay
   );
 
   return (
