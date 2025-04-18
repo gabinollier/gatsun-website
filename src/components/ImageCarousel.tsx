@@ -3,6 +3,7 @@
 import React from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Image from 'next/image';
+import Autoplay from 'embla-carousel-autoplay';
 
 interface ImageCarouselProps {
   images: string[];
@@ -10,7 +11,10 @@ interface ImageCarouselProps {
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, options }) => {
-  const [emblaRef] = useEmblaCarousel(options);
+  const [emblaRef] = useEmblaCarousel(
+    { loop: true, ...options },
+    [Autoplay({ delay: 3000 })] // Add Autoplay plugin with 3-second delay
+  );
 
   return (
     <div className="overflow-hidden rounded-lg" ref={emblaRef}>
