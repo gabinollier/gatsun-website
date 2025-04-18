@@ -29,9 +29,9 @@ export default function Home() {
   const [state, formAction] = useActionState(sendEmail, initialState);
 
   return (
-    <main className="bg-slate-900 text-slate-100 font-sans">
+    <main className="bg-slate-950 text-slate-100 font-sans">
       {/* Header Placeholder - Ideally, this would be in layout.tsx */}
-      <header className="fixed left-0 right-0 top-0 z-50 bg-slate-700/65 backdrop-blur-xl shadow-md px-8 md:px-20">
+      <header className="fixed left-0 right-0 top-0 z-50 bg-slate-800 backdrop-blur-xl shadow-md px-8 md:px-20">
         <nav className="container mx-auto h-20 py-1 flex justify-between items-center">
           <a className="h-full flex items-center gap-4 " href="#hero">
             <Image src="/logo.png" alt="Gatsun Logo" width={64} height={64} className="translate-y-0.5"/>
@@ -97,7 +97,7 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-8 md:px-20 container mx-auto scroll-mt-20">
+      <section id="about" className="bg-slate-950 py-20 px-8 md:px-20 container mx-auto scroll-mt-20">
         <h2 className="text-4xl font-bold text-center mb-12 text-orange-500 ">À Propos de Gatsun</h2>
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div className="md:intersect:motion-preset-slide-right-sm">
@@ -120,31 +120,31 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 px-8 md:px-20 bg-slate-800 scroll-mt-20">
+      <section id="services" className="py-20 px-8 md:px-20 bg-slate-900 scroll-mt-20">
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12 text-orange-500">Nos Services</h2>
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-8 text-center">
-            <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+            <div className="bg-slate-800 hover:shadow-orange-600/25 hover:shadow-2xl md:intersect:motion-preset-fade-md backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-700/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🎤</div>
               <h3 className="text-xl font-semibold mb-2">Enregistrement</h3>
               <p className="text-sm text-slate-400">Prise de son voix et instruments en cabine traitée</p>
             </div>
-             <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md motion-delay-100 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+             <div className="bg-slate-800 hover:shadow-orange-600/25 hover:shadow-2xl md:intersect:motion-preset-fade-md motion-delay-100 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-700/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🎚️</div>
               <h3 className="text-xl font-semibold mb-2">Mixage</h3>
               <p className="text-sm text-slate-400">Équilibrage et traitement de votre projet pour un rendu qualitatif</p>
             </div>
-             <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md motion-delay-200 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+             <div className="bg-slate-800 hover:shadow-orange-600/25 hover:shadow-2xl md:intersect:motion-preset-fade-md motion-delay-200 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-700/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🎧</div>
               <h3 className="text-xl font-semibold mb-2">Mastering</h3>
               <p className="text-sm text-slate-400">Finalisation de votre morceau pour une diffusion optimale sur les plateformes</p>
             </div>
-             <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md motion-delay-300 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+             <div className="bg-slate-800 hover:shadow-orange-600/25 hover:shadow-2xl md:intersect:motion-preset-fade-md motion-delay-300 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-700/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🎼</div>
               <h3 className="text-xl font-semibold mb-2">Composition</h3>
               <p className="text-sm text-slate-400">Aide à la création musicale et arrangements - Mise à disposition de notre clavier MIDI</p>
             </div>
-             <div className="bg-slate-700/65 md:intersect:motion-preset-fade-md motion-delay-400 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-600/65 transition duration-300">
+             <div className="bg-slate-800 hover:shadow-orange-600/25 hover:shadow-2xl md:intersect:motion-preset-fade-md motion-delay-400 backdrop-blur-xl p-6 rounded-xl shadow-lg hover:-translate-y-1 hover:bg-slate-700/65 transition duration-300">
               <div className="text-4xl mb-4 text-orange-500">🧑‍🏫</div>
               <h3 className="text-xl font-semibold mb-2">Conseils</h3>
               <p className="text-sm text-slate-400">Accompagnement personnalisé, pour vous permettre de donner le meilleur de vous-mêmes</p>
@@ -155,7 +155,7 @@ export default function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-8 md:px-20 container mx-auto scroll-mt-20"> {/* Added scroll-mt-20 */}
+      <section id="pricing" className="bg-slate-950 py-20 px-8 md:px-20 container mx-auto scroll-mt-20"> {/* Added scroll-mt-20 */}
         <h2 className="text-4xl font-bold text-center mb-12 text-orange-500">Nos Tarifs</h2>
 
         {/* Pricing Cards for Mobile */}
@@ -164,7 +164,7 @@ export default function Home() {
           <div className="bg-slate-800 rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-3 text-white">Enregistrement</h3>
             <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 15 €/h</p>
-            <p className="mb-4 text-orange-400"><span className="font-semibold">Tarif VAvantage*:</span> 8 €/h</p>
+            <p className="mb-4 text-orange-500"><span className="font-semibold">Tarif VAvantage*:</span> 8 €/h</p>
             <p className="text-sm text-slate-400">Enregistrement de votre morceau au studio, avec un ingé son étudiant.</p>
           </div>
 
@@ -172,7 +172,7 @@ export default function Home() {
           <div className="bg-slate-800 rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-3 text-white">Podcast</h3>
             <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 7,50 €/demi-heure</p>
-            <p className="mb-4 text-orange-400"><span className="font-semibold">Tarif VAvantage*:</span> 4 €/demi-heure</p>
+            <p className="mb-4 text-orange-500"><span className="font-semibold">Tarif VAvantage*:</span> 4 €/demi-heure</p>
             <p className="text-sm text-slate-400">Idéal pour une excellente qualité sonore pour votre podcast.</p>
           </div>
 
@@ -180,7 +180,7 @@ export default function Home() {
           <div className="bg-slate-800 rounded-lg p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-3 text-white">Mixage / Mastering</h3>
             <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 10 €**</p>
-            <p className="mb-4 text-orange-400"><span className="font-semibold">Tarif VAvantage*:</span> 20 €**</p>
+            <p className="mb-4 text-orange-500"><span className="font-semibold">Tarif VAvantage*:</span> 20 €**</p>
             <p className="text-sm text-slate-400">Finalisation de votre morceau par un de nos membres.</p>
           </div>
         </div>
@@ -189,35 +189,35 @@ export default function Home() {
         <div className="hidden md:block overflow-x-auto"> {/* Hide on small screens, show on md+ */}
           <table className="w-full min-w-[600px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-800">
-                <th className="p-4 border border-slate-700">Prestation</th>
-                <th className="p-4 border border-slate-700">Tarif Standard</th>
-                <th className="p-4 border border-slate-700">Tarif VAvantage*</th>
-                <th className="p-4 border border-slate-700">Description</th>
+              <tr className="bg-slate-900">
+                <th className="p-4 border border-slate-800">Prestation</th>
+                <th className="p-4 border border-slate-800">Tarif Standard</th>
+                <th className="p-4 border border-slate-800">Tarif VAvantage*</th>
+                <th className="p-4 border border-slate-800">Description</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="hover:bg-slate-800/50">
-                <td className="p-4 border border-slate-700 font-semibold">Enregistrement</td>
-                <td className="p-4 border border-slate-700"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">15 €/h</span></td>
-                <td className="p-4 border border-slate-700 text-orange-400"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">8 €/h</span></td>
-                <td className="p-4 border border-slate-700">Enregistrement de votre morceau au studio, avec un ingé son étudiant</td>
+              <tr className="hover:bg-slate-900/50">
+                <td className="p-4 border border-slate-800 font-semibold">Enregistrement</td>
+                <td className="p-4 border border-slate-800"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">15 €/h</span></td>
+                <td className="p-4 border border-slate-800 text-orange-500"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">8 €/h</span></td>
+                <td className="p-4 border border-slate-800">Enregistrement de votre morceau au studio, avec un ingé son étudiant</td>
               </tr>
-              <tr className="hover:bg-slate-800/50">
-                <td className="p-4 border border-slate-700 font-semibold">Podcast</td>
-                <td className="p-4 border border-slate-700">7,50 €/demi-heure</td>
-                <td className="p-4 border border-slate-700 text-orange-400">4 €/demi-heure</td>
-                <td className="p-4 border border-slate-700">Idéal pour une exellente qualité sonore pour votre podcast</td>
+              <tr className="hover:bg-slate-900/50">
+                <td className="p-4 border border-slate-800 font-semibold">Podcast</td>
+                <td className="p-4 border border-slate-800">7,50 €/demi-heure</td>
+                <td className="p-4 border border-slate-800 text-orange-500">4 €/demi-heure</td>
+                <td className="p-4 border border-slate-800">Idéal pour une exellente qualité sonore pour votre podcast</td>
               </tr>
-              <tr className="hover:bg-slate-800/50">
-                <td className="p-4 border border-slate-700 font-semibold">Mixage / Mastering</td>
-                <td className="p-4 border border-slate-700">10 €**</td>
-                <td className="p-4 border border-slate-700 text-orange-400">20 €**</td>
-                <td className="p-4 border border-slate-700">Finalisation de votre morceau par un de nos membres</td>
+              <tr className="hover:bg-slate-900/50">
+                <td className="p-4 border border-slate-800 font-semibold">Mixage / Mastering</td>
+                <td className="p-4 border border-slate-800">10 €**</td>
+                <td className="p-4 border border-slate-800 text-orange-500">20 €**</td>
+                <td className="p-4 border border-slate-800">Finalisation de votre morceau par un de nos membres</td>
               </tr>
-               <tr className="hover:bg-slate-800/50">
-                <td className="p-4 border border-slate-700 font-semibold">Captation - Événements extérieurs</td>
-                <td colSpan={3} className="p-4 border border-slate-700 text-center">Sur devis</td>
+               <tr className="hover:bg-slate-900/50">
+                <td className="p-4 border border-slate-800 font-semibold">Captation - Événements extérieurs</td>
+                <td colSpan={3} className="p-4 border border-slate-800 text-center">Sur devis</td>
               </tr>
             </tbody>
           </table>
@@ -245,7 +245,7 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-20 px-8 md:px-20 bg-slate-800 scroll-mt-20"> {/* Added scroll-mt-20 */}
+      <section className="py-20 px-8 md:px-20 bg-slate-900 scroll-mt-20"> {/* Added scroll-mt-20 */}
         <div className="container mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12 text-orange-500">Contact & Réservation</h2>
 
@@ -300,21 +300,21 @@ export default function Home() {
               <form action={formAction}> {/* Use the server action */}
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-sm font-medium mb-1">Nom<span className="text-orange-500">*</span></label>
-                  <input type="text" id="name" name="name" required className="w-full p-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:border-orange-500"/>
+                  <input type="text" id="name" name="name" required className="w-full p-2 rounded bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/>
                   {state.errors?.name && <p className="text-red-500 text-xs mt-1">{state.errors.name.join(', ')}</p>}
                 </div>
                 <div className="mb-4">
                   <label htmlFor="email" className="block text-sm font-medium mb-1">Email<span className="text-orange-500">*</span></label>
-                  <input type="email" id="email" name="email" required className="w-full p-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:border-orange-500"/>
+                  <input type="email" id="email" name="email" required className="w-full p-2 rounded bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/>
                    {state.errors?.email && <p className="text-red-500 text-xs mt-1">{state.errors.email.join(', ')}</p>}
                 </div>
                  <div className="mb-4">
                   <label htmlFor="availability" className="block text-sm font-medium mb-1">Quelles sont vos disponibilités ?</label> {/* Changed id/name to availability */}
-                  <input type="text" id="availability" name="availability" className="w-full p-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:border-orange-500"/> {/* Changed id/name to availability */}
+                  <input type="text" id="availability" name="availability" className="w-full p-2 rounded bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/> {/* Changed id/name to availability */}
                 </div>
                 <div className="mb-6">
                   <label htmlFor="message" className="block text-sm font-medium mb-1">Quel est votre projet ?<span className="text-orange-500">*</span></label>
-                  <textarea id="message" name="message" rows={4} required className="w-full p-2 rounded bg-slate-700 border border-slate-600 focus:outline-none focus:border-orange-500"></textarea>
+                  <textarea id="message" name="message" rows={4} required className="w-full p-2 rounded bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"></textarea>
                    {state.errors?.message && <p className="text-red-500 text-xs mt-1">{state.errors.message.join(', ')}</p>}
                 </div>
                 <SubmitButton /> {/* Use the custom submit button */}
@@ -330,7 +330,7 @@ export default function Home() {
       </section>
 
       {/* Footer Placeholder - Ideally, this would be in layout.tsx */}
-      <footer className="bg-slate-900 py-8 px-4 text-center text-slate-500 text-sm">
+      <footer className="bg-slate-950 py-8 px-4 text-center text-slate-500 text-sm">
         <div className="container mx-auto">
           <p>&copy; {new Date().getFullYear()} Gatsun. Tous droits réservés.</p>
            <p>Développé par des étudiants de l&apos;INSA Lyon.</p>
