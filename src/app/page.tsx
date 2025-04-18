@@ -161,7 +161,7 @@ export default function Home() {
         {/* Pricing Cards for Mobile */}
         <div className="block md:hidden space-y-6">
           {/* Enregistrement Card */}
-          <div className="bg-slate-800 rounded-lg p-6 shadow-md">
+          <div className="bg-slate-800 rounded-xl p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-3 text-white">Enregistrement</h3>
             <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 15 €/h</p>
             <p className="mb-4 text-orange-500"><span className="font-semibold">Tarif VAvantage*:</span> 8 €/h</p>
@@ -169,7 +169,7 @@ export default function Home() {
           </div>
 
           {/* Podcast Card */}
-          <div className="bg-slate-800 rounded-lg p-6 shadow-md">
+          <div className="bg-slate-800 rounded-xl p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-3 text-white">Podcast</h3>
             <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 7,50 €/demi-heure</p>
             <p className="mb-4 text-orange-500"><span className="font-semibold">Tarif VAvantage*:</span> 4 €/demi-heure</p>
@@ -177,7 +177,7 @@ export default function Home() {
           </div>
 
           {/* Mixage / Mastering Card */}
-          <div className="bg-slate-800 rounded-lg p-6 shadow-md">
+          <div className="bg-slate-800 rounded-xl p-6 shadow-md">
             <h3 className="text-xl font-semibold mb-3 text-white">Mixage / Mastering</h3>
             <p className="mb-2"><span className="font-semibold">Tarif Standard:</span> 10 €**</p>
             <p className="mb-4 text-orange-500"><span className="font-semibold">Tarif VAvantage*:</span> 20 €**</p>
@@ -300,21 +300,21 @@ export default function Home() {
               <form action={formAction}> {/* Use the server action */}
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-sm font-medium mb-1">Nom<span className="text-orange-500">*</span></label>
-                  <input type="text" id="name" name="name" required className="w-full p-2 rounded bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/>
+                  <input type="text" id="name" name="name" required className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/>
                   {state.errors?.name && <p className="text-red-500 text-xs mt-1">{state.errors.name.join(', ')}</p>}
                 </div>
                 <div className="mb-4">
                   <label htmlFor="email" className="block text-sm font-medium mb-1">Email<span className="text-orange-500">*</span></label>
-                  <input type="email" id="email" name="email" required className="w-full p-2 rounded bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/>
+                  <input type="email" id="email" name="email" required className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/>
                    {state.errors?.email && <p className="text-red-500 text-xs mt-1">{state.errors.email.join(', ')}</p>}
                 </div>
                  <div className="mb-4">
                   <label htmlFor="availability" className="block text-sm font-medium mb-1">Quelles sont vos disponibilités ?</label> {/* Changed id/name to availability */}
-                  <input type="text" id="availability" name="availability" className="w-full p-2 rounded bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/> {/* Changed id/name to availability */}
+                  <input type="text" id="availability" name="availability" className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/> {/* Changed id/name to availability */}
                 </div>
                 <div className="mb-6">
                   <label htmlFor="message" className="block text-sm font-medium mb-1">Quel est votre projet ?<span className="text-orange-500">*</span></label>
-                  <textarea id="message" name="message" rows={4} required className="w-full p-2 rounded bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"></textarea>
+                  <textarea id="message" name="message" rows={4} required className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"></textarea>
                    {state.errors?.message && <p className="text-red-500 text-xs mt-1">{state.errors.message.join(', ')}</p>}
                 </div>
                 <SubmitButton /> {/* Use the custom submit button */}
