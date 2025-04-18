@@ -31,7 +31,7 @@ export default function Home() {
   return (
     <main className="bg-slate-950 text-slate-100 font-sans">
       {/* Header Placeholder - Ideally, this would be in layout.tsx */}
-      <header className="fixed left-0 right-0 top-0 z-50 bg-slate-800 backdrop-blur-xl shadow-md px-8 md:px-20">
+      <header className="fixed left-0 right-0 top-0 z-50 bg-slate-900/70 backdrop-blur-xl shadow-lg px-8 md:px-20">
         <nav className="container mx-auto h-20 py-1 flex justify-between items-center">
           <a className="h-full flex items-center gap-4 " href="#hero">
             <Image src="/logo.png" alt="Gatsun Logo" width={64} height={64} className="translate-y-0.5"/>
@@ -89,7 +89,7 @@ export default function Home() {
           </p>
           <a
             href="#contact"
-            className="relative overflow-hidden inline-block bg-orange-600 active:bg-orange-700 text-white md:w-auto w-full font-bold py-3 px-8 rounded-full text-lg transition duration-300 hover:-translate-y-1 active:translate-y-0 shadow-lg shadow-orange-600/40 before:content-[''] before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:skew-x-[-25deg] hover:before:translate-x-full before:transition-transform before:duration-1000"
+            className="relative overflow-hidden inline-block bg-orange-600 active:bg-orange-700 text-white md:w-auto w-full font-bold py-3 px-8 rounded-full text-lg transition duration-300 hover:-translate-y-1 active:translate-y-0 shadow-lg shadow-orange-600/40 before:content-[''] before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/50 before:to-transparent before:skew-x-[-25deg] hover:before:translate-x-full before:transition-transform before:duration-1000"
           >
             Réserver un créneau
           </a>
@@ -108,8 +108,8 @@ export default function Home() {
             <p className="font-semibold ">Nos points forts :</p>
             <ul className="list-none mt-2 space-y-1">
               <li className="ml-4">✓ Encadrement par des passionnés</li>
-              <li className="ml-4">✓ Tarifs attractifs adaptés aux budgets étudiants</li>
-              <li className="ml-4">✓ Matériel d&apos;enregistrement d&apos;exellente qualité</li>
+              <li className="ml-4">✓ Tarifs attractifs adaptés aux petits budgets</li>
+              <li className="ml-4">✓ Matériel d&apos;enregistrement de qualité</li>
               <li className="ml-4">✓ Ambiance conviviale et créative</li>
             </ul>
           </div>
@@ -197,25 +197,25 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              <tr className="hover:bg-slate-900/50">
+              <tr className="hover:bg-slate-800/50 transition duration-300">
                 <td className="p-4 border border-slate-700 font-semibold">Enregistrement</td>
                 <td className="p-4 border border-slate-700"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">15 €/h</span></td>
                 <td className="p-4 border border-slate-700 text-orange-500"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">8 €/h</span></td>
                 <td className="p-4 border border-slate-700">Enregistrement de votre morceau au studio, avec un ingé son étudiant</td>
               </tr>
-              <tr className="hover:bg-slate-900/50">
+              <tr className="hover:bg-slate-800/50 transition duration-300">
                 <td className="p-4 border border-slate-700 font-semibold">Podcast</td>
                 <td className="p-4 border border-slate-700">7,50 €/demi-heure</td>
                 <td className="p-4 border border-slate-700 text-orange-500">4 €/demi-heure</td>
                 <td className="p-4 border border-slate-700">Idéal pour une exellente qualité sonore pour votre podcast</td>
               </tr>
-              <tr className="hover:bg-slate-900/50">
+              <tr className="hover:bg-slate-800/50 transition duration-300">
                 <td className="p-4 border border-slate-700 font-semibold">Mixage / Mastering</td>
                 <td className="p-4 border border-slate-700">10 €**</td>
                 <td className="p-4 border border-slate-700 text-orange-500">20 €**</td>
                 <td className="p-4 border border-slate-700">Finalisation de votre morceau par un de nos membres</td>
               </tr>
-               <tr className="hover:bg-slate-900/50">
+               <tr className="hover:bg-slate-800/50 transition duration-300">
                 <td className="p-4 border border-slate-700 font-semibold">Captation - Événements extérieurs</td>
                 <td colSpan={3} className="p-4 border border-slate-700 text-center">Sur devis</td>
               </tr>
