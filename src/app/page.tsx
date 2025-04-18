@@ -80,7 +80,7 @@ export default function Home() {
         </video>
 
         <div className="absolute inset-0 bg-black opacity-70 z-1 motion-bg-in-background"></div>
-        <div className="relative z-10 px-4 motion-blur-in-sm motion-duration-1500 motion-preset-slide-down-md">
+        <div className="relative z-10 px-8 md:px-20 motion-blur-in-sm motion-duration-1500 motion-preset-slide-down-md">
           <h1 className="motion-ty text-5xl md:text-7xl font-bold text-white mb-4">
             Votre studio d&apos;enregistrement à Lyon
           </h1>
@@ -189,35 +189,35 @@ export default function Home() {
         <div className="hidden md:block overflow-x-auto"> {/* Hide on small screens, show on md+ */}
           <table className="w-full min-w-[600px] text-left border-collapse">
             <thead>
-              <tr className="bg-slate-900">
-                <th className="p-4 border border-slate-800">Prestation</th>
-                <th className="p-4 border border-slate-800">Tarif Standard</th>
-                <th className="p-4 border border-slate-800">Tarif VAvantage*</th>
-                <th className="p-4 border border-slate-800">Description</th>
+              <tr className="bg-slate-800">
+                <th className="p-4 border border-slate-700">Prestation</th>
+                <th className="p-4 border border-slate-700">Tarif Standard</th>
+                <th className="p-4 border border-slate-700">Tarif VAvantage*</th>
+                <th className="p-4 border border-slate-700">Description</th>
               </tr>
             </thead>
             <tbody>
               <tr className="hover:bg-slate-900/50">
-                <td className="p-4 border border-slate-800 font-semibold">Enregistrement</td>
-                <td className="p-4 border border-slate-800"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">15 €/h</span></td>
-                <td className="p-4 border border-slate-800 text-orange-500"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">8 €/h</span></td>
-                <td className="p-4 border border-slate-800">Enregistrement de votre morceau au studio, avec un ingé son étudiant</td>
+                <td className="p-4 border border-slate-700 font-semibold">Enregistrement</td>
+                <td className="p-4 border border-slate-700"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">15 €/h</span></td>
+                <td className="p-4 border border-slate-700 text-orange-500"><span className="md:intersect:motion-scale-loop-100 md:intersect:motion-loop-twice inline-block">8 €/h</span></td>
+                <td className="p-4 border border-slate-700">Enregistrement de votre morceau au studio, avec un ingé son étudiant</td>
               </tr>
               <tr className="hover:bg-slate-900/50">
-                <td className="p-4 border border-slate-800 font-semibold">Podcast</td>
-                <td className="p-4 border border-slate-800">7,50 €/demi-heure</td>
-                <td className="p-4 border border-slate-800 text-orange-500">4 €/demi-heure</td>
-                <td className="p-4 border border-slate-800">Idéal pour une exellente qualité sonore pour votre podcast</td>
+                <td className="p-4 border border-slate-700 font-semibold">Podcast</td>
+                <td className="p-4 border border-slate-700">7,50 €/demi-heure</td>
+                <td className="p-4 border border-slate-700 text-orange-500">4 €/demi-heure</td>
+                <td className="p-4 border border-slate-700">Idéal pour une exellente qualité sonore pour votre podcast</td>
               </tr>
               <tr className="hover:bg-slate-900/50">
-                <td className="p-4 border border-slate-800 font-semibold">Mixage / Mastering</td>
-                <td className="p-4 border border-slate-800">10 €**</td>
-                <td className="p-4 border border-slate-800 text-orange-500">20 €**</td>
-                <td className="p-4 border border-slate-800">Finalisation de votre morceau par un de nos membres</td>
+                <td className="p-4 border border-slate-700 font-semibold">Mixage / Mastering</td>
+                <td className="p-4 border border-slate-700">10 €**</td>
+                <td className="p-4 border border-slate-700 text-orange-500">20 €**</td>
+                <td className="p-4 border border-slate-700">Finalisation de votre morceau par un de nos membres</td>
               </tr>
                <tr className="hover:bg-slate-900/50">
-                <td className="p-4 border border-slate-800 font-semibold">Captation - Événements extérieurs</td>
-                <td colSpan={3} className="p-4 border border-slate-800 text-center">Sur devis</td>
+                <td className="p-4 border border-slate-700 font-semibold">Captation - Événements extérieurs</td>
+                <td colSpan={3} className="p-4 border border-slate-700 text-center">Sur devis</td>
               </tr>
             </tbody>
           </table>
@@ -283,12 +283,12 @@ export default function Home() {
 
               <div className="flex items-center gap-4 mb-2"> 
                 <Image src="/mail.svg" alt="Email" width={32} height={32}/>
-                <a href="mailto:contact@gatsun.asso-insa-lyon.fr" className="hover:text-orange-400 font-bold">contact@gatsun.asso-insa-lyon.fr</a>
+                <a href="mailto:contact@gatsun.asso-insa-lyon.fr" className="hover:text-orange-500 font-bold">contact@gatsun.asso-insa-lyon.fr</a>
               </div>
 
               <div className="flex items-center gap-4 mb-2"> 
                 <Image src="/instagram.svg" alt="Email" width={32} height={32}/>
-                <a href="https://instagram.com/gatsun_records" target="_blank" rel="noopener noreferrer" className="hover:text-orange-400 font-bold">@gatsun_records</a>
+                <a href="https://instagram.com/gatsun_records" target="_blank" rel="noopener noreferrer" className="hover:text-orange-500 font-bold">@gatsun_records</a>
               </div>
 
               <div className="flex items-center my-8 max-w-256 mx-auto">
