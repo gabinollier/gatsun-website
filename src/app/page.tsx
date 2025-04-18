@@ -259,7 +259,7 @@ export default function Home() {
 
               <div className="flex items-center gap-4 mb-2"> 
                 <Image src="/instagram.svg" alt="Email" width={32} height={32}/>
-                <a href="https://instagram.com/gatsun_studio" target="_blank" rel="noopener noreferrer" className="hover:text-orange-400 font-bold">@gatsun_records</a>
+                <a href="https://instagram.com/gatsun_records" target="_blank" rel="noopener noreferrer" className="hover:text-orange-400 font-bold">@gatsun_records</a>
               </div>
 
               <div className="flex items-center my-8 max-w-256 mx-auto">
