@@ -35,7 +35,7 @@ export default function Home() {
         <nav className="container mx-auto h-20 py-1 flex justify-between items-center">
           <a className="h-full flex items-center gap-4 " href="#hero">
             <Image src="/logo.png" alt="Gatsun Logo" width={64} height={64} className="translate-y-0.5"/>
-            <span className="text-2xl font-bold text-white hidden md:inline">Gatsun</span>
+            <span className="text-2xl font-bold text-white hidden md:inline drop-shadow-lg drop-shadow-white/20">Gatsun</span>
           </a>
           <div className="h-full flex flex-row gap-4 md:gap-10 justify-center items-center">
           <a
@@ -239,7 +239,7 @@ export default function Home() {
         </div>
 
 
-        <p className="mt-12 text-sm text-slate-400">*Tarif applicable sur présentation de la carte VAvantage de l'INSA Lyon uniquement.</p>
+        <p className="mt-12 text-sm text-slate-400">*Tarif applicable sur présentation de la carte VAvantage de l&apos;INSA Lyon uniquement.</p>
         <p className="text-sm text-slate-400">**Tarif indicatif pour un morceau.</p>
 
       </section>
