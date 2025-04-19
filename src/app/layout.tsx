@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gatsun - Studio d'enregistrement",
+  title: "Gatsun - Studio associatif",
 };
 
 export default function RootLayout({

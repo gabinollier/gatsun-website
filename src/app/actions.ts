@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 // Initialize Resend with API key from environment variables
 const resend = new Resend(process.env.RESEND_API_KEY);
-const toEmail = 'ollier.gabin@gmail.com'; // Destination email address
+const toEmail = 'contact@gatsun.asso-insa-lyon.fr'; // Destination email address
 
 // Define the shape of the form state
 export interface FormState {
@@ -29,10 +29,7 @@ const ContactFormSchema = z.object({
 });
 
 // Server action to handle form submission
-export async function sendEmail(
-  prevState: FormState,
-  formData: FormData
-): Promise<FormState> {
+export async function sendEmail(prevState: FormState, formData: FormData): Promise<FormState> {
   // Validate form fields
   const validatedFields = ContactFormSchema.safeParse({
     name: formData.get('name'),
@@ -55,12 +52,11 @@ export async function sendEmail(
   // Send email using Resend
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Site Gatsun <onboarding@resend.dev>', // Must be a verified domain in Resend (or onboarding@resend.dev for testing) like no-reply@gatsun.fr
+      from: `${name} via gatsun.fr <no-reply@gatsun.fr>`,
       to: [toEmail],
-      subject: `[Site Gatsun] Nouveau message de ${name} via le formulaire de contact`,
+      subject: `[Formulaire de conact] Nouveau message de ${name} via gatsun.fr`,
       replyTo: email, 
-      text: `Nom: ${name}\nEmail: ${email}\nDisponibilités: ${availability || 'Non spécifiées'}\n\nMessage:\n${message}\n Ne pas répondre à cet email.`,
-      // react: <EmailTemplate name={name} email={email} message={message} availability={availability} />,
+      text: `Un nouveau message a été envoyé depuis le formulaire de contact de gatsun.fr : \n\nNom: ${name}\nEmail: ${email}\nDisponibilités: ${availability || ''}\n\nMessage:\n${message} \n\nNe pas répondre à cet email.`,
     });
 
     if (error) {

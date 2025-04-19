@@ -1,9 +1,10 @@
 "use client";
+
 import Image from "next/image";
-import ImageCarousel from "../components/ImageCarousel"; // Import the carousel component
-import { useActionState } from 'react'; // Import useActionState from React
-import { useFormStatus } from 'react-dom'; // Import hooks for form state
-import { sendEmail, FormState } from './actions'; // Import the server action and type
+import ImageCarousel from "../components/ImageCarousel"; 
+import { useActionState } from 'react'; 
+import { useFormStatus } from 'react-dom'; 
+import { sendEmail, FormState } from './actions'; 
 
 // Define initial state for the form
 const initialState: FormState = {
@@ -26,12 +27,12 @@ function SubmitButton() {
 }
 
 export default function Home() {
-  const [state, formAction] = useActionState(sendEmail, initialState);
+  const [formState, formAction] = useActionState(sendEmail, initialState);
 
   return (
     <main className="bg-slate-950 text-slate-100 font-sans">
       {/* Header Placeholder - Ideally, this would be in layout.tsx */}
-      <header className="fixed left-0 right-0 top-0 z-50 bg-slate-900/70 backdrop-blur-xl shadow-lg px-8 md:px-20">
+      <header className="fixed left-0 right-0 top-0 z-50 bg-slate-900/70 backdrop-blur-xl shadow-lg shadow-black/30 px-8 md:px-20">
         <nav className="container mx-auto h-20 py-1 flex justify-between items-center">
           <a className="h-full flex items-center gap-4 " href="#hero">
             <Image src="/logo.png" alt="Gatsun Logo" width={64} height={64} className="translate-y-0.5"/>
@@ -81,10 +82,10 @@ export default function Home() {
 
         <div className="absolute inset-0 bg-black opacity-70 z-1 motion-bg-in-background"></div>
         <div className="relative z-10 px-8 md:px-20 motion-blur-in-sm motion-duration-1500 motion-preset-slide-down-md">
-          <h1 className="motion-ty text-5xl md:text-7xl font-bold text-white mb-4">
+          <h1 className="motion-ty text-4xl md:text-7xl font-bold text-white mb-4">
             Votre studio d&apos;enregistrement à Lyon
           </h1>
-          <p className="text-xl text-slate-300 mb-8 ">
+          <p className="text-lg md:text-xl text-slate-300 mb-8 ">
             Donnez vie à votre musique, à un tarif étudiant.
           </p>
           <a
@@ -100,12 +101,12 @@ export default function Home() {
       <section id="about" className="bg-slate-950 py-20 px-8 md:px-20 container mx-auto scroll-mt-20">
         <h2 className="text-4xl font-bold text-center mb-12 text-orange-500 ">À Propos de Gatsun</h2>
         <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div className="md:intersect:motion-preset-slide-right-sm">
-            <h3 className="text-2xl font-semibold mb-6 ">Le studio de musique par des étudiants</h3>
+          <div className="md:intersect:motion-preset-slide-right-sm text-slate-200">
+            <h3 className="text-2xl font-semibold mb-6 text-white">Le studio de musique par des étudiants</h3>
             <p className="mb-6 ">
-              Gatsun est un <span className="font-bold text-orange-500">studio d&apos;enregistrement</span> et de composition unique, géré par une équipe passionnée d&apos;étudiants de l&apos;INSA Lyon. Notre mission : offrir <span className="font-bold text-orange-500">un espace créatif de qualité accessible à tous</span>, en particulier aux étudiants et aux jeunes artistes.
+              Gatsun est un <span className="font-bold text-orange-500">studio associatif</span>, géré par une équipe passionnée d&apos;étudiants de l&apos;INSA Lyon. Notre mission : offrir <span className="font-bold text-orange-500">un espace créatif de qualité accessible à tous</span>, en particulier aux étudiants et aux jeunes artistes.
             </p>
-            <p className="font-semibold ">Nos points forts :</p>
+            <p className="font-semibold text-white">Nos points forts :</p>
             <ul className="list-none mt-2 space-y-1">
               <li className="ml-4">✓ Encadrement par des passionnés</li>
               <li className="ml-4">✓ Tarifs attractifs adaptés aux petits budgets</li>
@@ -297,16 +298,16 @@ export default function Home() {
                 <div className="flex-grow h-px bg-slate-700"></div>
               </div>
 
-              <form action={formAction}> {/* Use the server action */}
+              <form action={formAction}>
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-sm font-medium mb-1">Nom<span className="text-orange-500">*</span></label>
                   <input type="text" id="name" name="name" required className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/>
-                  {state.errors?.name && <p className="text-red-500 text-xs mt-1">{state.errors.name.join(', ')}</p>}
+                  {formState.errors?.name && <p className="text-red-500 text-xs mt-1">{formState.errors.name.join(', ')}</p>}
                 </div>
                 <div className="mb-4">
                   <label htmlFor="email" className="block text-sm font-medium mb-1">Email<span className="text-orange-500">*</span></label>
                   <input type="email" id="email" name="email" required className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"/>
-                   {state.errors?.email && <p className="text-red-500 text-xs mt-1">{state.errors.email.join(', ')}</p>}
+                   {formState.errors?.email && <p className="text-red-500 text-xs mt-1">{formState.errors.email.join(', ')}</p>}
                 </div>
                  <div className="mb-4">
                   <label htmlFor="availability" className="block text-sm font-medium mb-1">Quelles sont vos disponibilités ?</label> {/* Changed id/name to availability */}
@@ -315,12 +316,12 @@ export default function Home() {
                 <div className="mb-6">
                   <label htmlFor="message" className="block text-sm font-medium mb-1">Quel est votre projet ?<span className="text-orange-500">*</span></label>
                   <textarea id="message" name="message" rows={4} required className="w-full p-2 rounded-xl bg-slate-800 border border-slate-700 focus:outline-none focus:border-orange-500"></textarea>
-                   {state.errors?.message && <p className="text-red-500 text-xs mt-1">{state.errors.message.join(', ')}</p>}
+                   {formState.errors?.message && <p className="text-red-500 text-xs mt-1">{formState.errors.message.join(', ')}</p>}
                 </div>
-                <SubmitButton /> {/* Use the custom submit button */}
-                {state.message && (
-                  <p className={`mt-4 text-sm ${state.success ? 'text-green-500' : 'text-red-500'}`}>
-                    {state.message}
+                <SubmitButton />
+                {formState.message && (
+                  <p className={`mt-4 text-sm ${formState.success ? 'text-green-500' : 'text-red-500'}`}>
+                    {formState.message}
                   </p>
                 )}
               </form>
