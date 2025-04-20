@@ -3,11 +3,9 @@
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-// Initialize Resend with API key from environment variables
 const resend = new Resend(process.env.RESEND_API_KEY);
-const toEmail = 'contact@gatsun.asso-insa-lyon.fr'; // Destination email address
+const toEmail = 'contact@gatsun.asso-insa-lyon.fr'; 
 
-// Define the shape of the form state
 export interface FormState {
   message: string;
   success: boolean;
@@ -15,22 +13,19 @@ export interface FormState {
     name?: string[];
     email?: string[];
     message?: string[];
-    availability?: string[]; // Added availability field
-    _form?: string[]; // General form errors
+    availability?: string[];
+    _form?: string[];
   };
 }
 
-// Define the validation schema using Zod
 const ContactFormSchema = z.object({
   name: z.string().trim().min(1, { message: 'Le nom est requis.' }),
   email: z.string().email({ message: 'Veuillez entrer une adresse email valide.' }),
-  availability: z.string().trim().optional(), // Availability is optional
+  availability: z.string().trim().optional(), 
   message: z.string().trim().min(1, { message: 'Le message ne peut pas être vide.' }),
 });
 
-// Server action to handle form submission
 export async function sendEmail(prevState: FormState, formData: FormData): Promise<FormState> {
-  // Validate form fields
   const validatedFields = ContactFormSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
@@ -38,7 +33,6 @@ export async function sendEmail(prevState: FormState, formData: FormData): Promi
     message: formData.get('message'),
   });
 
-  // If validation fails, return errors
   if (!validatedFields.success) {
     return {
       message: 'La validation du formulaire a échoué.',
@@ -49,7 +43,6 @@ export async function sendEmail(prevState: FormState, formData: FormData): Promi
 
   const { name, email, availability, message } = validatedFields.data;
 
-  // Send email using Resend
   try {
     const { data, error } = await resend.emails.send({
       from: `${name} via gatsun.fr <no-reply@gatsun.fr>`,

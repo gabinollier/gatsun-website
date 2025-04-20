@@ -13,7 +13,7 @@ interface ImageCarouselProps {
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, options }) => {
   const [emblaRef] = useEmblaCarousel(
     { loop: true, ...options },
-    [Autoplay({ delay: 5000 })] // Add Autoplay plugin with 3-second delay
+    [Autoplay({ delay: 5000 })] 
   );
 
   return (
@@ -24,9 +24,9 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images, options }) => {
             <Image
               src={src}
               alt={`Carousel image ${index + 1}`}
-              fill // Use fill to cover the container
-              style={{ objectFit: 'cover' }} // Ensure the image covers the area
-              sizes="(max-width: 768px) 100vw, 50vw" // Optimize image loading
+              fill 
+              style={{ objectFit: 'cover' }}
+              sizes="(max-width: 768px) 100vw, 50vw" 
             />
           </div>
         ))}
