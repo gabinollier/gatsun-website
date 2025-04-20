@@ -50,24 +50,22 @@ export default function PricingSection() {
     <section id="pricing" className="bg-slate-950 py-20 px-8 md:px-20 container scroll-mt-20 mx-auto">
       <h2 className="text-4xl font-bold text-center mb-16 text-orange-500">Nos Tarifs</h2>
 
-      {/* Pricing Cards Container */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        {services.map((service) => (
-          <a // Wrap the card content in an anchor tag
+        {services.map((service, index) => (
+          <a 
             key={service.title}
-            href="#contact" // Set the href to the contact section ID
-            className={`relative bg-slate-800 rounded-xl shadow-xl ring hover:ring-2 ring-slate-600 flex flex-col transition duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-orange-950 hover:ring-orange-500 cursor-pointer`} // Added block and cursor-pointer
+            href="#contact" 
+            className={`intersect-once md:intersect:motion-preset-fade-md motion-duration-1000 motion-delay-${index * 100} relative bg-slate-800 rounded-xl shadow-xl ring hover:ring-2 ring-slate-600 flex flex-col transition duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-orange-950 hover:ring-orange-500 cursor-pointer`} 
           >
-            {service.popular && (
+            {service.popular ? (
               <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
                 Populaire
               </span>
-            )}
+            ) : null}
 
-            {/* Top Section (Title, Price) */}
-            <div className="p-10 border-b border-slate-700 text-center">
-              <h3 className="text-xl font-semibold mb-4 text-center text-white">{service.title}</h3>
-              <div className="mb-2"> {/* Increased bottom margin */}
+            <div className="p-10 border-b border-slate-700 text-left">
+              <h3 className="text-xl font-semibold mb-4 text-white">{service.title}</h3>
+              <div className="mb-2"> 
                   <span className="text-4xl font-bold text-white">{service.price}</span>
                   <span className="text-sm text-slate-400 ml-1">{service.frequency}</span>
               </div>
@@ -95,7 +93,6 @@ export default function PricingSection() {
         ))}
       </div>
 
-      {/* Divider and Custom Quote Button */}
       <div className="flex items-center my-12 max-w-2xl mx-auto">
         <div className="flex-grow h-px bg-slate-700"></div>
         <span className="mx-4 text-slate-500 font-semibold">OU</span>
@@ -111,7 +108,6 @@ export default function PricingSection() {
         </a>
       </div>
 
-      {/* Footnotes */}
       <div className="text-left mt-12 text-sm text-slate-400">
         <p>*Tarif applicable sur présentation de la carte VAvantage de l&apos;INSA Lyon uniquement.</p>
         <p>**Tarif indicatif, peut varier selon la complexité du projet.</p>

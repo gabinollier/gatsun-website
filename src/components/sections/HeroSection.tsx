@@ -1,6 +1,6 @@
 export default function HeroSection() {
   return (
-    <section id="hero" className="relative h-screen flex items-center justify-center text-center overflow-hidden">
+    <section id="hero" className="relative h-screen flex items-center justify-center  text-center overflow-hidden">
       <video
         autoPlay
         loop
@@ -12,9 +12,9 @@ export default function HeroSection() {
         Your browser does not support the video.
       </video>
 
-      <div className="absolute inset-0 bg-black opacity-70 z-1 motion-bg-in-background"></div>
-      <div className="relative z-10 px-8 md:px-20 motion-blur-in-sm motion-duration-1500 motion-preset-slide-down-md">
-        <h1 className="motion-ty text-4xl md:text-7xl font-bold text-white mb-4">
+      <div className="absolute inset-0 bg-black opacity-70 z-1  motion-opacity-in-100 motion-duration-1500"></div>
+      <div className="relative z-10 px-8 md:px-20 motion-blur-in-sm motion-duration-1500 motion-preset-slide-up-md">
+        <h1 className="text-4xl md:text-7xl font-bold text-white mb-4">
           Votre studio d&apos;enregistrement à Lyon
         </h1>
         <p className="text-lg md:text-xl text-slate-300 mb-8 ">
