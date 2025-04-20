@@ -9,30 +9,20 @@ export default function Header() {
                 <span className="text-2xl font-bold text-white hidden md:inline drop-shadow-lg drop-shadow-white/20">Gatsun</span>
               </a>
               <div className="h-full flex flex-row gap-4 md:gap-10 justify-center items-center">
-              <a
-                href="#about"
-                className="h-full flex items-center hover:text-orange-400 transition duration-100 active:text-white "
-              >
-                À propos
-              </a>
-              <a
-                href="#services"
-                className="h-full flex items-center hover:text-orange-400 transition duration-100 active:text-white "
-              >
-                Services
-              </a>
-              <a
-                href="#pricing"
-                className="h-full flex items-center hover:text-orange-400 transition duration-100 active:text-white "
-              >
-                Tarifs
-              </a>
-              <a
-                href="#contact"
-                className="h-full flex items-center hover:text-orange-400 transition duration-100 active:text-white "
-              >
-                Contact
-              </a>
+
+                {[{ href: "#about", text: "À propos" },
+                  { href: "#services", text: "Services" },
+                  { href: "#pricing", text: "Tarifs" },
+                  { href: "#contact", text: "Contact" },
+                ].map((section) => (
+                  <a
+                    key={section.href}
+                    href={section.href}
+                    className="h-full flex items-center hover:text-orange-400 transition duration-100 active:text-white "
+                  >
+                    {section.text}
+                  </a>
+                ))}
               </div>
             </nav>
           </header>

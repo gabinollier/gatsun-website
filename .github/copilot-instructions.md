@@ -1,6 +1,6 @@
 # Copilot instructions
 
-Don't add any comments or explanations to the code unless it is necessary.
+Don't add any comments or explanations to the code unless it is necessary. Especially avoid "I just did this" or "I just added this". If you need to precise something, do it in the chat message instead.
 
 Follow the code style of the existing code.
 
