@@ -18,7 +18,7 @@ export default function Header() {
                   <a
                     key={section.href}
                     href={section.href}
-                    className="h-full flex items-center hover:text-orange-400 transition duration-100 active:text-white "
+                    className="h-full text-white flex items-center hover:text-orange-400 transition duration-100 active:text-white "
                   >
                     {section.text}
                   </a>

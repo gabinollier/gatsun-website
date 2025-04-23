@@ -10,7 +10,7 @@ export default function ContactSection() {
         <div className="grid md:grid-cols-2 gap-16 mt-10">
 
           {/* Contact Info & Map */}
-          <div className="intersect-once md:intersect:motion-preset-slide-right-sm">
+          <div className="md:intersect:motion-preset-slide-right-sm">
             <h3 className="text-2xl font-semibold mb-6">Comment prendre rendez-vous ?</h3>
 
               <p className="mb-4">Pour réserver un créneau ou pour n&apos;importe quelle question, vous pouvez nous contacter par <span className="font-bold text-orange-500">e-mail</span>, par <span className="font-bold text-orange-500">Instagram</span>, ou via le <span className="font-bold text-orange-500">formulaire</span> de ce site. </p>
@@ -36,7 +36,7 @@ export default function ContactSection() {
              <a href="https://www.google.com/maps/place/Studio+Gatsun/@45.7881387,4.8636957,4301m/data=!3m1!1e3!4m6!3m5!1s0x47f4c1f6e749a53f:0xeeca76a88d567bf3!8m2!3d45.7840159!4d4.8799093!16s%2Fg%2F11gtg89kh4?hl=fr&entry=ttu&g_ep=EgoyMDI1MDQxNC4xIKXMDSoASAFQAw%3D%3D" className="mt-2 text-sm text-slate-400">5 Rue des Sciences, 69100 Villeurbanne (INSA Lyon - Campus LyonTech La Doua)</a>
           </div>
 
-          <div className="intersect-once md:intersect:motion-preset-slide-left-sm">
+          <div className="md:intersect:motion-preset-slide-left-sm">
             <h3 id="contact" className="text-2xl font-semibold mb-6 scroll-mt-32 md:scroll-mt-54">Nous Contacter</h3>
 
             <div className="flex items-center gap-4 mb-2">
