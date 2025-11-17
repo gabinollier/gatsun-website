@@ -2,7 +2,7 @@
 import { Observer } from "tailwindcss-intersect";
 import { useEffect } from "react";
  
-export default function ObserverProvider({
+export default function TailwindIntersectProvider({
   children,
 }: {
   children: React.ReactNode;

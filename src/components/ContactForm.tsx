@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { sendEmail, FormState } from '@/actions/formAction'; 
+import { sendEmail, FormState } from '@/actions/contactFormAction'; 
 
 const initialFormState: FormState = {
   message: '',

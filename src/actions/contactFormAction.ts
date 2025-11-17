@@ -26,6 +26,7 @@ const ContactFormSchema = z.object({
 });
 
 export async function sendEmail(prevState: FormState, formData: FormData): Promise<FormState> {
+  console.debug('sendEmail');
   const validatedFields = ContactFormSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
@@ -47,9 +48,9 @@ export async function sendEmail(prevState: FormState, formData: FormData): Promi
     const { data, error } = await resend.emails.send({
       from: `${name} via gatsun.fr <no-reply@gatsun.fr>`,
       to: [toEmail],
-      subject: `[Formulaire de conact] Nouveau message de ${name} via gatsun.fr`,
+      subject: `[Formulaire de contact] Nouveau message de ${name} via gatsun.fr`,
       replyTo: email, 
-      text: `Un nouveau message a été envoyé depuis le formulaire de contact de gatsun.fr : \n\nNom: ${name}\nEmail: ${email}\nDisponibilités: ${availability || ''}\n\nMessage:\n${message} \n\nNe pas répondre à cet email.`,
+      text: `Message envoyé depuis le formulaire de contact de gatsun.fr : \n\nNom: ${name}\nEmail: ${email}\nDisponibilités: ${availability || ''}\n\nMessage:\n${message}`,
     });
 
     if (error) {

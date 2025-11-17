@@ -33,3 +33,135 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+th {
+  background: black;
+}
+
+.fc {
+  --fc-border-color: rgb(63, 81, 100);
+  --fc-button-bg-color: #ea580c;
+  --fc-button-border-color: var(--fc-button-bg-color);
+  --fc-button-hover-bg-color: #cd500d;
+  --fc-button-hover-border-color: var(--fc-button-hover-bg-color);
+  --fc-button-active-bg-color: #9a3412;
+  --fc-button-active-border-color: var(--fc-button-active-bg-color);
+  --fc-today-bg-color: rgba(194, 65, 12, 0.14);
+}
+
+.fc .fc-toolbar-title {
+  color: #f1f5f9;
+  font-size: 1.25rem;
+}
+
+
+@media (min-width: 768px) {
+  .fc .fc-toolbar-title {
+    font-size: 1.5rem;
+  }
+}
+
+.fc .fc-button {
+  text-transform: capitalize;
+  font-weight: 600;
+  box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.4);
+  border-radius: 0.5rem;
+}
+
+.fc .fc-col-header-cell {
+  background-color: #1e293b;
+  color: #cbd5e1;
+  border-color: rgba(241, 245, 249, 0.1);
+}
+
+.fc .fc-timegrid-axis {
+  background-color: #0f172a;
+  border-color: rgba(241, 245, 249, 0.1);
+}
+.fc .fc-col-header {
+  background-color: #0f172a;
+}
+
+.fc .fc-timegrid-slot {
+  height: 0rem;
+  border-color: rgba(241, 245, 249, 0.05);
+}
+
+.fc .fc-timegrid-slot-label {
+  color: #94a3b8;
+  border-color: rgba(241, 245, 249, 0.1);
+}
+
+.fc .fc-daygrid-day,
+.fc .fc-timegrid-col {
+  background-color: #0f172a;
+}
+
+.fc .fc-event {
+  background-color: transparent;
+  border-color: transparent;
+  border-width: 0;
+  cursor: pointer;
+  box-shadow: none;
+  margin: 0;
+}
+
+.fc-event-main
+{
+  border-width: 0;
+}
+
+.fc .fc-scrollgrid {
+  border-color: rgba(241, 245, 249, 0.205);
+}
+
+@media (max-width: 767px) {
+  .fc .fc-toolbar {
+    flex-direction: row;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .fc .fc-toolbar-chunk {
+    display: flex;
+  }
+  
+  .fc .fc-toolbar .fc-toolbar-chunk:first-child {
+    justify-content: flex-start;
+  }
+  
+  .fc .fc-toolbar .fc-toolbar-chunk:nth-child(2) {
+    justify-content: center;
+    flex: 1;
+  }
+  
+  .fc .fc-toolbar .fc-toolbar-chunk:last-child {
+    justify-content: flex-end;
+  }
+  
+  .fc .fc-col-header-cell-cushion {
+    padding: 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .fc .fc-timegrid-slot-label-cushion {
+    font-size: 0.6rem;
+  }
+  
+  .fc .fc-timegrid-slot {
+    height: 0rem;
+ }
+  
+  .fc .fc-button {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.875rem;
+  }
+  
+  .fc .fc-toolbar-title {
+    font-size: 1rem;
+  }
+
+  .fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 0rem;
+  }
+
+}
