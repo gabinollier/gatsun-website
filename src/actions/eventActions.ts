@@ -174,8 +174,8 @@ export async function updateSingleOccurrence(id: string, db_id: number, eventDat
 export async function updateNonRecurringEvent(db_id: number, eventData: FCEventData, connectionId?: string): Promise<FCEvent> {
   console.debug('updateNonRecurringEvent');
 
-  // simulate 2000ms delay
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  // simulate delay
+  // await new Promise(resolve => setTimeout(resolve, 1000));
 
   ensureValidEventWindow(eventData.start, eventData.end);
   try {

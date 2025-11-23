@@ -64,11 +64,10 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
   const [pendingEventData, setPendingEventData] = useState<FCEventData | null>(null);
   const [pendingOriginalEvent, setPendingOriginalEvent] = useState<FCEventData | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [showEarlyHours] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const calendarRef = useRef<FullCalendar>(null);
   const loadedWeeks = useRef<Set<string>>(new Set());
   const abortControllerRef = useRef<AbortController | null>(null);
-  const hasCompletedInitialLoad = useRef(false);
   const connectionId = useRef(crypto.randomUUID());
   const activeMutations = useRef(0);
   const eventMutationTimestamps = useRef<Record<number, number>>({});
@@ -185,20 +184,15 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
     let cancelled = false;
 
     const runInitialFetch = async () => {
-      if (!hasCompletedInitialLoad.current) {
-        setIsSyncing(true);
-      }
-
       try {
         await initialFetchEvents();
         if (!cancelled) {
-          hasCompletedInitialLoad.current = true;
-          setIsSyncing(false);
+          setIsInitialLoading(false);
         }
       } catch (error) {
         console.error('Error during initial fetch:', error);
         if (!cancelled) {
-          setIsSyncing(false);
+          setIsInitialLoading(false);
         }
       }
     };
@@ -687,13 +681,18 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
 
   return (
     <>
-      {isSyncing && (
-        <div className="fixed bottom-6 right-6 z-[70] flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/90 text-white text-sm shadow-2xl border border-slate-100/20">
-          <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          <span>Sauvegarde…</span>
+      <div className={`${isSyncing ? "opacity-100 duration-0" : "opacity-0 duration-300"} transition-opacity  fixed bottom-6 right-6 z-[70] flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/90 text-white text-sm shadow-2xl border border-slate-100/20`}>
+        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        <span>Sauvegarde…</span>
+      </div>
+
+      {isInitialLoading && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center">
+          <div className="h-12 w-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
-      <div className="bg-slate-900 md:rounded-lg md:shadow-2xl md:shadow-black/50 md:p-6 md:border md:border-slate-100/10 h-full w-full">
+
+      <div className={`bg-slate-900 md:rounded-lg md:shadow-2xl md:shadow-black/50 md:p-6 md:border md:border-slate-100/10 h-full w-full transition-opacity duration-500 ${isInitialLoading ? 'opacity-50 pointer-events-none select-none' : 'opacity-100'}`}>
         {/* <div className="flex justify-end px-2 mb-2">
           <button
             onClick={() => setShowEarlyHours((prev) => !prev)}
@@ -707,9 +706,12 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           plugins={[timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
           headerToolbar={{
-            left: 'prev,today',
+            left: 'prev today',
             center: 'title',
             right: 'next'
+          }}
+          buttonText={{
+            today: "Aujourd'hui"
           }}
           locale="fr"
           editable={true}
@@ -717,8 +719,8 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           selectMirror={true}
           weekends={true}
           firstDay={1}
-          slotMinTime={showEarlyHours ? '00:00:00' : '08:00:00'}
-          slotMaxTime="24:00:00"
+          slotMinTime='08:00:00'
+          slotMaxTime="32:00:00"
           allDaySlot={false}
           events={events}
           select={handleDrag}

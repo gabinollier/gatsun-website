@@ -33,8 +33,17 @@ Le nom de domaine est géré par OVH.
 - Aucune authentification, c'est voulu ! Les données ne sont pas sensibles et si elles sont backup régulièrement, AU PIRE, on peu rollback.
 - UI FullCalendar.
 - Communication avec le serveur via des server actions pour les créations/éditions/suppressions d’événements.
-- Le serveur modifie la DB et notifie les clients du changement via un Server Sent Event (SSE).
-- Quand un client reçoit un message SSE `update`, il recharge tous les événements affichés.
+- **Optimistic UI & Race Conditions** :
+  - Le client applique immédiatement les changements localement (Optimistic UI) pour une interface réactive.
+  - Une stratégie "Last Write Wins" basée sur des timestamps (`eventMutationTimestamps`) empêche les réponses serveur obsolètes d'écraser les modifications locales récentes, évitant les problèmes de race condition lors d'éditions rapides.
+  - Un état de chargement global (`isSyncing`) avec un compteur de mutations actives gère l'indicateur "Sauvegarde...".
+  - Un état de chargement initial (`isInitialLoading`) bloque l'interface jusqu'à la récupération des premières données.
+- **Server Sent Events (SSE)** :
+  - Le serveur notifie les clients des changements via SSE.
+  - Chaque client génère un `connectionId` unique envoyé lors des mutations.
+  - Le serveur renvoie ce `connectionId` dans le payload SSE, permettant au client émetteur d'ignorer sa propre notification (puisqu'il a déjà mis à jour son UI localement), économisant un re-fetch inutile.
+  - Les autres clients reçoivent l'événement `update` et rechargent les données.
+  - Le SSE diffuse également le nombre de spectateurs connectés (`viewers`).
 - Les événements sont stockés dans la table `calendar_events`. 
 - Si ils ont l'attribut `repeat_weekly` à 1, ils sont récurrents et seront dupliqués toutes les semaines quand le serveur enverra la liste des évènements au client.
 - Il y a une table `calendar_event_exceptions`. Si une occurence est présente dans cette table, elle ne sera pas affichée.

@@ -15,9 +15,22 @@ export async function GET(request: NextRequest) {
 
       notifyClients('viewers', { count: getClientCount() });
 
+      // Heartbeat to detect dead connections
+      const interval = setInterval(() => {
+        try {
+          controller.enqueue(encoder.encode(': ping\n\n'));
+        } catch {
+          clearInterval(interval);
+          removeClient(controller);
+          try { controller.close(); } catch {}
+          notifyClients('viewers', { count: getClientCount() });
+        }
+      }, 15000);
+
       request.signal.addEventListener('abort', () => {
+        clearInterval(interval);
         removeClient(controller);
-        controller.close();
+        try { controller.close(); } catch {}
         notifyClients('viewers', { count: getClientCount() });
       });
     },
