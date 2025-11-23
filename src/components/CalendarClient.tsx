@@ -68,12 +68,22 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
   const calendarRef = useRef<FullCalendar>(null);
   const loadedWeeks = useRef<Set<string>>(new Set());
   const abortControllerRef = useRef<AbortController | null>(null);
-  const lastLocalUpdateTimestamp = useRef<number>(0);
   const hasCompletedInitialLoad = useRef(false);
+  const connectionId = useRef(crypto.randomUUID());
+  const activeMutations = useRef(0);
+  const eventMutationTimestamps = useRef<Record<number, number>>({});
 
-  const beginLocalMutation = useCallback(() => {
-    lastLocalUpdateTimestamp.current = Date.now();
-    setIsSyncing(true);
+  const startMutation = useCallback(() => {
+    activeMutations.current += 1;
+    if (activeMutations.current === 1) setIsSyncing(true);
+  }, []);
+
+  const endMutation = useCallback(() => {
+    activeMutations.current -= 1;
+    if (activeMutations.current <= 0) {
+      activeMutations.current = 0;
+      setIsSyncing(false);
+    }
   }, []);
 
   const isWeekLoaded = useCallback((weekStart: Date): boolean => {
@@ -211,13 +221,10 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           return;
         }
         if (data.type === 'update') {
-          if (data.timestamp >= lastLocalUpdateTimestamp.current) {
-            try {
-              await initialFetchEvents();
-            } finally {
-              setIsSyncing(false);
-            }
+          if (data.connectionId === connectionId.current) {
+            return;
           }
+          await initialFetchEvents();
         }
       } catch {
         if (event.data === 'update' || event.data === 'connected') {
@@ -271,16 +278,17 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       abortControllerRef.current = null;
     }
 
-    beginLocalMutation();
+    startMutation();
 
     try {
-      const createdEvent: FCEvent = await createEvent(newEvent);
+      const createdEvent: FCEvent = await createEvent(newEvent, connectionId.current);
       setEvents((previous) => [...previous, createdEvent]);
     } catch (error) {
       console.error('Error creating event:', error);
       alert('Erreur lors de la création de l\'événement');
-      setIsSyncing(false);
       throw error;
+    } finally {
+      endMutation();
     }
   };
 
@@ -298,24 +306,32 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       abortControllerRef.current = null;
     }
 
-    beginLocalMutation();
+    const dbId = updatedEvent.extendedProps.db_id;
+    const mutationTime = Date.now();
+    eventMutationTimestamps.current[dbId] = mutationTime;
+    startMutation();
 
     try {
       const updatedEventFromServer = await updateSingleOccurrence(
         updatedEvent.id, 
         updatedEvent.extendedProps.db_id, 
-        updatedEvent
+        updatedEvent,
+        connectionId.current
       );
       
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
       setEvents((previous) => {
         const filtered = previous.filter(event => event.id !== updatedEvent.id);
         return [...filtered, updatedEventFromServer];
       });
     } catch (error) {
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
       console.error('Error updating single occurrence:', error);
       alert('Erreur lors de la mise à jour de l\'occurrence');
-      setIsSyncing(false);
       throw error;
+    } finally {
+      endMutation();
     }
   };
 
@@ -327,11 +343,16 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       abortControllerRef.current = null;
     }
 
-    beginLocalMutation();
+    const dbId = updatedEvent.extendedProps.db_id;
+    const mutationTime = Date.now();
+    eventMutationTimestamps.current[dbId] = mutationTime;
+    startMutation();
 
     try {
-      await updateAllOccurrences(updatedEvent.extendedProps.db_id, updatedEvent);
-      const dbId = updatedEvent.extendedProps.db_id;
+      const updatedEventFromServer = await updateAllOccurrences(updatedEvent.extendedProps.db_id, updatedEvent, connectionId.current);
+      
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
       const referenceStart = originalEvent?.start ?? updatedEvent.start;
       const referenceEnd = originalEvent?.end ?? updatedEvent.end;
       const startDelta = updatedEvent.start.getTime() - referenceStart.getTime();
@@ -348,21 +369,23 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
         return {
           ...event,
           id: buildEventId(dbId, nextStart),
-          title: updatedEvent.title,
+          title: updatedEventFromServer.title,
           start: nextStart,
           end: nextEnd,
           extendedProps: {
             ...event.extendedProps,
-            members: updatedEvent.extendedProps.members,
-            repeat_weekly: updatedEvent.extendedProps.repeat_weekly,
+            members: updatedEventFromServer.extendedProps.members,
+            repeat_weekly: updatedEventFromServer.extendedProps.repeat_weekly,
           },
         };
       }));
     } catch (error) {
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
       console.error('Error updating all occurrences:', error);
       alert('Erreur lors de la mise à jour de toutes les occurrences');
-      setIsSyncing(false);
       throw error;
+    } finally {
+      endMutation();
     }
   };
 
@@ -374,18 +397,23 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       abortControllerRef.current = null;
     }
 
-    beginLocalMutation();
+    const dbId = updatedEvent.extendedProps.db_id;
+    const mutationTime = Date.now();
+    eventMutationTimestamps.current[dbId] = mutationTime;
+    startMutation();
 
     try {
-      await updateNonRecurringEvent(updatedEvent.extendedProps.db_id, updatedEvent);
-      const dbId = updatedEvent.extendedProps.db_id;
+      const updatedEventFromServer = await updateNonRecurringEvent(updatedEvent.extendedProps.db_id, updatedEvent, connectionId.current);
+      
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
       const nextEvent: FCEvent = {
-        id: buildEventId(dbId, updatedEvent.start),
-        title: updatedEvent.title,
-        start: new Date(updatedEvent.start),
-        end: new Date(updatedEvent.end),
+        id: buildEventId(dbId, updatedEventFromServer.start),
+        title: updatedEventFromServer.title,
+        start: new Date(updatedEventFromServer.start),
+        end: new Date(updatedEventFromServer.end),
         extendedProps: {
-          ...updatedEvent.extendedProps,
+          ...updatedEventFromServer.extendedProps,
           db_id: dbId,
         },
       };
@@ -397,32 +425,42 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
         return nextEvent;
       }));
     } catch (error) {
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
       console.error('Error updating non-recurring event:', error);
       alert('Erreur lors de la mise à jour de l\'événement');
-      setIsSyncing(false);
       throw error;
+    } finally {
+      endMutation();
     }
   };
 
   const handleDeleteSingleOccurrence = async () => {
-    if (!selectedEvent?.id) return;
+    if (!selectedEvent?.id || !selectedEvent.extendedProps.db_id) return;
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
 
-    beginLocalMutation();
+    const dbId = selectedEvent.extendedProps.db_id;
+    const mutationTime = Date.now();
+    eventMutationTimestamps.current[dbId] = mutationTime;
+    startMutation();
 
     try {
-      await deleteSingleOccurrence(selectedEvent.id);
+      await deleteSingleOccurrence(selectedEvent.id, connectionId.current);
+      
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
       const eventId = selectedEvent.id;
       setEvents((previous) => previous.filter(event => event.id !== eventId));
     } catch (error) {
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
       console.error('Error deleting single occurrence:', error);
       alert('Erreur lors de la suppression de l\'occurrence');
-      setIsSyncing(false);
       throw error;
+    } finally {
+      endMutation();
     }
   };
 
@@ -434,17 +472,24 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       abortControllerRef.current = null;
     }
 
-    beginLocalMutation();
+    const dbId = selectedEvent.extendedProps.db_id;
+    const mutationTime = Date.now();
+    eventMutationTimestamps.current[dbId] = mutationTime;
+    startMutation();
 
     try {
-      await deleteAllOccurrences(selectedEvent.extendedProps.db_id);
-      const dbId = selectedEvent.extendedProps.db_id;
+      await deleteAllOccurrences(selectedEvent.extendedProps.db_id, connectionId.current);
+      
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
       setEvents((previous) => previous.filter(event => event.extendedProps.db_id !== dbId));
     } catch (error) {
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
       console.error('Error deleting all occurrences:', error);
       alert('Erreur lors de la suppression de toutes les occurrences');
-      setIsSyncing(false);
       throw error;
+    } finally {
+      endMutation();
     }
   };
 
@@ -456,17 +501,24 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       abortControllerRef.current = null;
     }
 
-    beginLocalMutation();
+    const dbId = selectedEvent.extendedProps.db_id;
+    const mutationTime = Date.now();
+    eventMutationTimestamps.current[dbId] = mutationTime;
+    startMutation();
 
     try {
-      await deleteNonRecurringEvent(selectedEvent.extendedProps.db_id);
-      const dbId = selectedEvent.extendedProps.db_id;
+      await deleteNonRecurringEvent(selectedEvent.extendedProps.db_id, connectionId.current);
+      
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
       setEvents((previous) => previous.filter(event => event.extendedProps.db_id !== dbId));
     } catch (error) {
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
       console.error('Error deleting non-recurring event:', error);
       alert('Erreur lors de la suppression de l\'événement');
-      setIsSyncing(false);
       throw error;
+    } finally {
+      endMutation();
     }
   };
 
@@ -523,18 +575,23 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       return;
     }
 
-    beginLocalMutation();
+    const dbId = changeInfo.event.extendedProps.db_id;
+    const mutationTime = Date.now();
+    eventMutationTimestamps.current[dbId] = mutationTime;
+    startMutation();
 
     try {
-      await updateNonRecurringEvent(changeInfo.event.extendedProps.db_id, updatedEvent);
-      const dbId = changeInfo.event.extendedProps.db_id;
+      const updatedEventFromServer = await updateNonRecurringEvent(changeInfo.event.extendedProps.db_id, updatedEvent, connectionId.current);
+      
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
       const nextEvent: FCEvent = {
-        id: buildEventId(dbId, updatedEvent.start),
-        title: updatedEvent.title,
-        start: new Date(updatedEvent.start),
-        end: new Date(updatedEvent.end),
+        id: buildEventId(dbId, updatedEventFromServer.start),
+        title: updatedEventFromServer.title,
+        start: new Date(updatedEventFromServer.start),
+        end: new Date(updatedEventFromServer.end),
         extendedProps: {
-          ...updatedEvent.extendedProps,
+          ...updatedEventFromServer.extendedProps,
           db_id: dbId,
         },
       };
@@ -546,10 +603,12 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
         return nextEvent;
       }));
     } catch (error) {
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
       console.error('Error updating event:', error);
       alert('Erreur lors de la mise à jour de l\'événement');
-      setIsSyncing(false);
       changeInfo.revert();
+    } finally {
+      endMutation();
     }
   };
 

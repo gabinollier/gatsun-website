@@ -96,7 +96,7 @@ export async function getEvents(rangeFrom: string, rangeTo: string): Promise<FCE
   }
 }
 
-export async function createEvent(eventData: FCEventData): Promise<FCEvent> {
+export async function createEvent(eventData: FCEventData, connectionId?: string): Promise<FCEvent> {
   console.debug('createEvent');
   ensureValidEventWindow(eventData.start, eventData.end);
   try {
@@ -121,7 +121,7 @@ export async function createEvent(eventData: FCEventData): Promise<FCEvent> {
       },
     };
 
-    notifyClients('update');
+    notifyClients('update', { connectionId });
 
     return createdEvent;
   } catch (error) {
@@ -130,7 +130,7 @@ export async function createEvent(eventData: FCEventData): Promise<FCEvent> {
   }
 }
 
-export async function updateSingleOccurrence(id: string, db_id: number, eventData: FCEventData): Promise<FCEvent> {
+export async function updateSingleOccurrence(id: string, db_id: number, eventData: FCEventData, connectionId?: string): Promise<FCEvent> {
   console.debug('updateSingleOccurrence');
   ensureValidEventWindow(eventData.start, eventData.end);
   try {
@@ -142,12 +142,12 @@ export async function updateSingleOccurrence(id: string, db_id: number, eventDat
 
     if (dbEvent.repeat_weekly) {
       // Si oui, on supprime l'occurrence en ajoutant une exception
-      await deleteSingleOccurrence(id);
+      await deleteSingleOccurrence(id, connectionId);
       // Puis on crée un nouvel évènement avec les nouvelles données
       eventData.id = undefined;
       eventData.extendedProps.db_id = undefined;
       eventData.extendedProps.repeat_weekly = 0;
-      updatedEvent = await createEvent(eventData);
+      updatedEvent = await createEvent(eventData, connectionId);
     }
     else {
       // Sinon, on met à jour l'évènement directement
@@ -162,7 +162,7 @@ export async function updateSingleOccurrence(id: string, db_id: number, eventDat
       updatedEvent = eventData as FCEvent;
     }
 
-    notifyClients('update');
+    notifyClients('update', { connectionId });
 
     return updatedEvent;
   } catch (error) {
@@ -171,8 +171,12 @@ export async function updateSingleOccurrence(id: string, db_id: number, eventDat
   }
 }
 
-export async function updateNonRecurringEvent(db_id: number, eventData: FCEventData): Promise<void> {
+export async function updateNonRecurringEvent(db_id: number, eventData: FCEventData, connectionId?: string): Promise<FCEvent> {
   console.debug('updateNonRecurringEvent');
+
+  // simulate 2000ms delay
+  await new Promise(resolve => setTimeout(resolve, 2000));
+
   ensureValidEventWindow(eventData.start, eventData.end);
   try {
     const { title, start, end, extendedProps } = eventData;
@@ -181,14 +185,26 @@ export async function updateNonRecurringEvent(db_id: number, eventData: FCEventD
       'UPDATE calendar_events SET title = $1, "start" = $2, "end" = $3, members = $4, repeat_weekly = $5 WHERE id = $6',
       [title, start, end, members, repeat_weekly, db_id]
     );
-    notifyClients('update');
+    notifyClients('update', { connectionId });
+
+    return {
+      id: getFullCalendarId(db_id, start),
+      title,
+      start,
+      end,
+      extendedProps: {
+        members,
+        repeat_weekly,
+        db_id,
+      },
+    };
   } catch (error) {
     console.error('Error updating non-recurring event:', error);
     throw new Error('Failed to update non-recurring event');
   } 
 }
 
-export async function updateAllOccurrences(db_id: number, eventData: FCEventData): Promise<void> {
+export async function updateAllOccurrences(db_id: number, eventData: FCEventData, connectionId?: string): Promise<FCEvent> {
   console.debug('updateAllOccurrences');
   ensureValidEventWindow(eventData.start, eventData.end);
   try {
@@ -213,7 +229,19 @@ export async function updateAllOccurrences(db_id: number, eventData: FCEventData
       await db.query('DELETE FROM calendar_event_exceptions WHERE event_id = $1', [db_id]);
     }
 
-    notifyClients('update');
+    notifyClients('update', { connectionId });
+
+    return {
+      id: getFullCalendarId(db_id, start),
+      title,
+      start,
+      end,
+      extendedProps: {
+        members,
+        repeat_weekly,
+        db_id,
+      },
+    };
 
   } catch (error) {
     console.error('Error updating all occurrences:', error);
@@ -221,25 +249,25 @@ export async function updateAllOccurrences(db_id: number, eventData: FCEventData
   }
 }
 
-export async function deleteAllOccurrences(db_id: number): Promise<void> {
+export async function deleteAllOccurrences(db_id: number, connectionId?: string): Promise<void> {
   console.debug('deleteAllOccurrences');
   // Supprimer l'évènement principal comme si c'était un évènement non récurrent
   // Les exceptions associées seront supprimées en cascade via la contrainte SQL
-  await deleteNonRecurringEvent(db_id);
+  await deleteNonRecurringEvent(db_id, connectionId);
 }
 
-export async function deleteNonRecurringEvent(db_id: number): Promise<void> {
+export async function deleteNonRecurringEvent(db_id: number, connectionId?: string): Promise<void> {
   console.debug('deleteNonRecurringEvent');
   try {
     await db.query('DELETE FROM calendar_events WHERE id = $1', [db_id]);
-    notifyClients('update');
+    notifyClients('update', { connectionId });
   } catch (error) {
     console.error('Error deleting non-recurring event:', error);
     throw new Error('Failed to delete non-recurring event');
   }
 }
 
-export async function deleteSingleOccurrence(id: string): Promise<void>{
+export async function deleteSingleOccurrence(id: string, connectionId?: string): Promise<void>{
   console.debug('deleteSingleOccurrence');
   // Ajouter une exception pour cette occurrence
   try {
@@ -250,7 +278,7 @@ export async function deleteSingleOccurrence(id: string): Promise<void>{
       [dbId, occurrenceDateStr]
     );
 
-    notifyClients('update');
+    notifyClients('update', { connectionId });
   } catch (error) {
     console.error('Error deleting single occurrence:', error);
     throw new Error('Failed to delete single occurrence');

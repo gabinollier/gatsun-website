@@ -1,7 +1,7 @@
 export interface SSEPayload {
   type: string;
-  timestamp: number;
   count?: number;
+  connectionId?: string;
 }
 
 type SSEGlobal = typeof globalThis & {
@@ -24,11 +24,10 @@ export function removeClient(controller: ReadableStreamDefaultController) {
   clients.delete(controller);
 }
 
-export function notifyClients(message: string, extra?: Partial<Omit<SSEPayload, 'type' | 'timestamp'>>) {
+export function notifyClients(message: string, extra?: Partial<Omit<SSEPayload, 'type'>>) {
   const encoder = new TextEncoder();
   const payload: SSEPayload = {
     type: message,
-    timestamp: Date.now(),
     ...extra,
   };
   const data = encoder.encode(`data: ${JSON.stringify(payload)}\n\n`);
@@ -36,7 +35,7 @@ export function notifyClients(message: string, extra?: Partial<Omit<SSEPayload, 
   clients.forEach((controller) => {
     try {
       controller.enqueue(data);
-      console.log('SSE sent to client:', payload.type, 'timestamp:', payload.timestamp);
+      console.log('SSE sent to client:', payload.type);
     } catch {
       clients.delete(controller);
     }
