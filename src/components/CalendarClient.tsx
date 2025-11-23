@@ -64,7 +64,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
   const [pendingEventData, setPendingEventData] = useState<FCEventData | null>(null);
   const [pendingOriginalEvent, setPendingOriginalEvent] = useState<FCEventData | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [showEarlyHours, setShowEarlyHours] = useState(false);
+  const [showEarlyHours] = useState(false);
   const calendarRef = useRef<FullCalendar>(null);
   const loadedWeeks = useRef<Set<string>>(new Set());
   const abortControllerRef = useRef<AbortController | null>(null);

@@ -1,8 +1,8 @@
 interface DBEventData {
   id?: number;
   title: string;
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
   members: string;
   repeat_weekly: number;
 }
@@ -14,7 +14,7 @@ interface DBEvent extends DBEventData {
 // Représente une exception à un événement récurrent, c'est à dire une occurence supprimée (qu'il ne faut donc pas afficher)
 interface DBEventException {
   event_id: number;
-  occurrence_date: string;
+  occurrence_date: Date;
 }
 
 // "fc" stands for "FullCalendar"

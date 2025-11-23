@@ -18,7 +18,7 @@ Simple calendar app using FullCalendar and SQLite.
 
 ## Database
 
-Events are stored in SQLite at `app-data/gatsun-website.db` (both in dev and production).
+Events are stored in PostgreSQL.
 
 ## API Routes
 

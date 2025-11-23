@@ -16,9 +16,9 @@ Le nom de domaine est géré par OVH.
 - Next.js 15 (App Router) + React 19
 - Tailwind CSS v4 avec les plugins `tailwindcss-motion` et `tailwindcss-intersect` pour les animations.
 - FullCalendar 6 pour l’UI du calendrier.
-- SQLite avec le package `better-sqlite3` pour la base de donnée des évènements du calendrier
+- PostgreSQL avec le package `pg` pour la base de donnée des évènements du calendrier
 - `Resend` pour l’envoi d’emails pour le formulaire de contact, `zod` pour la validation des données du forumulaire.
-- Tout est dans un seul conteneur Docker avec un volume pour la persistance de la base de données SQLite.
+- Tout est dans un seul conteneur Docker
 
 ## Fonctionnement détaillé
 
@@ -30,7 +30,7 @@ Le nom de domaine est géré par OVH.
 
 ### Calendrier interne
 
-- Aucune authentification, c'est voulu ! Les données ne sont pas sensibles et si le volume Docker (et donc la DB) est backup régulièrement, AU PIRE, on peu rollback.
+- Aucune authentification, c'est voulu ! Les données ne sont pas sensibles et si elles sont backup régulièrement, AU PIRE, on peu rollback.
 - UI FullCalendar.
 - Communication avec le serveur via des server actions pour les créations/éditions/suppressions d’événements.
 - Le serveur modifie la DB et notifie les clients du changement via un Server Sent Event (SSE).
@@ -52,7 +52,7 @@ Créez un `.env` en fournissez ces variables :
 | Variable | Description |
 | --- | --- |
 | `RESEND_API_KEY` | Jeton API Resend ; indispensable pour envoyer les emails de contact. |
-| `DATABASE_URL` | Chemin relatif vers le fichier SQLite depuis la racine du projet Next.js. Dois commencer par `file:`. Exemple : `DATABASE_URL=file:./app-data/gatsun-website.db`. Attention, il faut que ça soit concordant avec la config du volume Docker |
+| `DATABASE_URL` | URL de connexion à la base de données PostgreSQL. Exemple : `postgres://user:password@host:port` |
 
 ## Lancer le projet en local
 
