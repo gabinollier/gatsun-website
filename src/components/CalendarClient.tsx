@@ -16,7 +16,8 @@ import {
   updateAllOccurrences,
   deleteSingleOccurrence,
   deleteNonRecurringEvent,
-  deleteAllOccurrences 
+  deleteAllOccurrences,
+  replaceRecurringWithSingle
 } from '@/actions/eventActions';
 
 /*
@@ -63,6 +64,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
   const [recurringAction, setRecurringAction] = useState<'update' | 'delete' | null>(null);
   const [pendingEventData, setPendingEventData] = useState<FCEventData | null>(null);
   const [pendingOriginalEvent, setPendingOriginalEvent] = useState<FCEventData | null>(null);
+  const [showStopRecurringDialog, setShowStopRecurringDialog] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const calendarRef = useRef<FullCalendar>(null);
@@ -276,7 +278,12 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
 
     try {
       const createdEvent: FCEvent = await createEvent(newEvent, connectionId.current);
+
       setEvents((previous) => [...previous, createdEvent]);
+
+      if (newEvent.extendedProps.repeat_weekly) {
+        await initialFetchEvents();
+      }
     } catch (error) {
       console.error('Error creating event:', error);
       alert('Erreur lors de la création de l\'événement');
@@ -305,6 +312,8 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
     eventMutationTimestamps.current[dbId] = mutationTime;
     startMutation();
 
+    
+
     try {
       const updatedEventFromServer = await updateSingleOccurrence(
         updatedEvent.id, 
@@ -314,6 +323,12 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       );
       
       if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
+      const originalEvent = events.find((event) => event.id === updatedEvent.id);
+      if (updatedEventFromServer.extendedProps.repeat_weekly != originalEvent?.extendedProps.repeat_weekly) {
+        await initialFetchEvents();
+        return;
+      }
 
       setEvents((previous) => {
         const filtered = previous.filter(event => event.id !== updatedEvent.id);
@@ -329,7 +344,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
     }
   };
 
-  const handleUpdateAllOccurrences = async (updatedEvent: FCEventData, originalEvent?: FCEventData | null): Promise<void> => {
+  const handleUpdateAllOccurrences = async (updatedEvent: FCEventData, originalEvent: FCEventData | null): Promise<void> => {
     if (!updatedEvent.extendedProps.db_id) return;
 
     if (abortControllerRef.current) {
@@ -346,6 +361,12 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       const updatedEventFromServer = await updateAllOccurrences(updatedEvent.extendedProps.db_id, updatedEvent, connectionId.current);
       
       if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
+      // Si l'événement est devenu récurrent, refetch tout pour avoir les occurrences
+      if (updatedEventFromServer.extendedProps.repeat_weekly != originalEvent?.extendedProps.repeat_weekly) {
+        await initialFetchEvents();
+        return;
+      }
 
       const referenceStart = originalEvent?.start ?? updatedEvent.start;
       const referenceEnd = originalEvent?.end ?? updatedEvent.end;
@@ -386,6 +407,8 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
   const handleUpdateNonRecurringEvent = async (updatedEvent: FCEventData): Promise<void> => {
     if (!updatedEvent.extendedProps.db_id) return;
 
+    const originalEvent = events.find((event) => event.id === updatedEvent.id);
+
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
@@ -400,6 +423,11 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       const updatedEventFromServer = await updateNonRecurringEvent(updatedEvent.extendedProps.db_id, updatedEvent, connectionId.current);
       
       if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
+      if (updatedEventFromServer.extendedProps.repeat_weekly != originalEvent?.extendedProps.repeat_weekly) {
+        await initialFetchEvents();
+        return;
+      }
 
       const nextEvent: FCEvent = {
         id: buildEventId(dbId, updatedEventFromServer.start),
@@ -615,7 +643,20 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       event.id = selectedEvent.id;
       event.extendedProps.db_id = selectedEvent.extendedProps.db_id;
 
-      if (selectedEvent.extendedProps.repeat_weekly) {
+      if (selectedEvent.extendedProps.repeat_weekly && event.extendedProps.repeat_weekly === 0) {
+        const originalStart = getOriginalOccurrenceStart(selectedEvent);
+        const isInitialOccurrence = originalStart && selectedEvent.start.getTime() === originalStart.getTime();
+        
+        if (isInitialOccurrence) {
+          event.extendedProps.repeat_weekly = 0;
+          await handleReplaceRecurringWithSingle(event);
+          setIsModalOpen(false);
+        } else {
+          setPendingEventData(event);
+          setPendingOriginalEvent(selectedEvent);
+          setShowStopRecurringDialog(true);
+        }
+      } else if (selectedEvent.extendedProps.repeat_weekly) {
         setPendingEventData(event);
         setPendingOriginalEvent(selectedEvent);
         setRecurringAction('update');
@@ -679,6 +720,96 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
     setPendingOriginalEvent(null);
   };
 
+  const getOriginalOccurrenceStart = (event: FCEventData): Date | null => {
+    if (!event.extendedProps.db_id) return null;
+    const originalEvent = events.find(
+      (e) => e.extendedProps.db_id === event.extendedProps.db_id
+    );
+    if (!originalEvent) return null;
+    const allOccurrences = events.filter(
+      (e) => e.extendedProps.db_id === event.extendedProps.db_id
+    );
+    const sorted = allOccurrences.sort((a, b) => a.start.getTime() - b.start.getTime());
+    return sorted.length > 0 ? sorted[0].start : null;
+  };
+
+  const handleReplaceRecurringWithSingle = async (eventData: FCEventData): Promise<void> => {
+    if (!eventData.extendedProps.db_id) return;
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+
+    const dbId = eventData.extendedProps.db_id;
+    const mutationTime = Date.now();
+    eventMutationTimestamps.current[dbId] = mutationTime;
+    startMutation();
+
+    try {
+      await replaceRecurringWithSingle(dbId, eventData, connectionId.current);
+      
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+
+      await initialFetchEvents();
+    } catch (error) {
+      if (eventMutationTimestamps.current[dbId] !== mutationTime) return;
+      console.error('Error replacing recurring with single:', error);
+      alert('Erreur lors du remplacement de l\'événement');
+      throw error;
+    } finally {
+      endMutation();
+    }
+  };
+
+  const handleStopRecurringDialogChoice = async (choice: 'this' | 'initial') => {
+    setShowStopRecurringDialog(false);
+
+    try {
+      if (pendingEventData && pendingOriginalEvent?.extendedProps.db_id) {
+        let eventToCreate: FCEventData;
+        
+        if (choice === 'this') {
+          eventToCreate = { ...pendingEventData };
+        } else {
+          const originalStart = getOriginalOccurrenceStart(pendingOriginalEvent);
+          if (!originalStart) return;
+          
+          const originalDbEvent = events.find(
+            (e) => e.extendedProps.db_id === pendingOriginalEvent.extendedProps.db_id && 
+                   e.start.getTime() === originalStart.getTime()
+          );
+          if (!originalDbEvent) return;
+          
+          const originalDuration = originalDbEvent.end.getTime() - originalDbEvent.start.getTime();
+          const newDuration = pendingEventData.end.getTime() - pendingEventData.start.getTime();
+          
+          eventToCreate = {
+            ...pendingEventData,
+            start: originalStart,
+            end: new Date(originalStart.getTime() + newDuration),
+          };
+        }
+        
+        eventToCreate.extendedProps.repeat_weekly = 0;
+        
+        await handleReplaceRecurringWithSingle(eventToCreate);
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error('Error handling stop recurring action:', error);
+    } finally {
+      setPendingEventData(null);
+      setPendingOriginalEvent(null);
+    }
+  };
+
+  const closeStopRecurringDialog = () => {
+    setShowStopRecurringDialog(false);
+    setPendingEventData(null);
+    setPendingOriginalEvent(null);
+  };
+
   return (
     <>
       <div className={`${isSyncing ? "opacity-100 duration-0" : "opacity-0 duration-300"} transition-opacity  fixed bottom-6 right-6 z-[70] flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/90 text-white text-sm shadow-2xl border border-slate-100/20`}>
@@ -692,7 +823,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
         </div>
       )}
 
-      <div className={`bg-slate-900 md:rounded-lg md:shadow-2xl md:shadow-black/50 md:p-6 md:border md:border-slate-100/10 h-full w-full transition-opacity duration-500 ${isInitialLoading ? 'opacity-50 pointer-events-none select-none' : 'opacity-100'}`}>
+      <div className={`bg-slate-900 motion-opacity-in-100- md:rounded-lg md:shadow-2xl md:shadow-black/50 md:p-6 md:border md:border-slate-100/10 h-full w-full transition-opacity duration-500 ${isInitialLoading ? 'opacity-50 pointer-events-none select-none' : 'opacity-100'}`}>
         {/* <div className="flex justify-end px-2 mb-2">
           <button
             onClick={() => setShowEarlyHours((prev) => !prev)}
@@ -721,6 +852,9 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           firstDay={1}
           slotMinTime='08:00:00'
           slotMaxTime="32:00:00"
+          timeZone='Europe/Paris'
+          nowIndicator={true}
+          nowIndicatorClassNames={"animate-pulse "}
           allDaySlot={false}
           events={events}
           select={handleDrag}
@@ -733,6 +867,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           expandRows={true}
           eventContent={(arg) => {
             const members = arg.event.extendedProps.members;
+            const isRecurring = arg.event.extendedProps.repeat_weekly > 0;
             const eventStart = arg.event.start ? new Date(arg.event.start) : null;
             const eventEnd = arg.event.end ? new Date(arg.event.end) : null;
             const startString = eventStart
@@ -748,8 +883,18 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
             return (
               <div
                 style={{ height: 'calc(100% - 6px)' }}
-                className={`translate-y-0.5 px-0.5 py-0.5 overflow-hidden w-full bg-orange-600 hover:bg-orange-700 rounded-lg shadow-lg ring-3 ${isSelected ? 'ring-4' : ''} ring-white outline-2 outline-orange-600 hover:outline-orange-700 sm:px-2 sm:py-1.5 ${isCompactEvent ? 'flex items-center  text-center' : ''}`}
+                className={`relative translate-y-0.5 px-0.5 py-0.5 overflow-hidden w-full bg-orange-600 hover:bg-orange-700 rounded-lg shadow-lg ring-3 ${isSelected ? 'ring-4' : ''} ring-white outline-2 outline-orange-600 hover:outline-orange-700 sm:px-2 sm:py-1.5 ${isCompactEvent ? 'flex items-center  text-center' : ''}`}
               >
+                {isRecurring && (
+                  <div className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 w-3 h-3 sm:w-4 sm:h-4 bg-white/30 rounded-full flex items-center justify-center">
+                    <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                      <path d="M3 3v5h5" />
+                      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                      <path d="M16 16h5v5" />
+                    </svg>
+                  </div>
+                )}
                 {isCompactEvent ? (
                   <div className="font-semibold break-normal text-[10px] leading-3 sm:leading-4 sm:text-xs md:text-sm">
                     {arg.event.title}
@@ -829,6 +974,58 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
                     className="flex-1 min-w-[150px] px-4 py-2.5 sm:px-5 sm:py-3 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-semibold rounded-lg transition duration-200 shadow-lg shadow-orange-600/40 text-sm sm:text-base"
                   >
                     Toutes les occurrences
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showStopRecurringDialog && (
+        <div 
+          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
+          onClick={closeStopRecurringDialog}
+        >
+          <div 
+            className="flex min-h-dvh items-start sm:items-center justify-center px-3 py-4 sm:px-4 sm:py-6 overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div 
+              className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-100/10 w-full max-w-lg"
+              style={{ maxHeight: 'calc(100dvh - 1.5rem)' }}
+            >
+              <div className="p-4 sm:p-6">
+                <div className="flex items-start justify-between mb-4 sm:mb-5">
+                  <h3 className="text-lg sm:text-xl font-bold text-white">
+                    Arrêter la récurrence
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={closeStopRecurringDialog}
+                    className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
+                    aria-label="Fermer"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <p className="text-sm sm:text-base text-slate-300 mb-6">
+                  Quelle occurrence voulez-vous conserver ? Toutes les autres occurrences seront supprimées.
+                </p>
+                <div className="flex flex-row flex-wrap gap-2 sm:gap-3">
+                  <button
+                    onClick={() => handleStopRecurringDialogChoice('this')}
+                    className="flex-1 min-w-[140px] px-4 py-2.5 sm:px-5 sm:py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-semibold rounded-lg transition duration-200 shadow-lg shadow-slate-900/40 text-sm sm:text-base"
+                  >
+                    Cette occurrence
+                  </button>
+                  <button
+                    onClick={() => handleStopRecurringDialogChoice('initial')}
+                    className="flex-1 min-w-[150px] px-4 py-2.5 sm:px-5 sm:py-3 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-semibold rounded-lg transition duration-200 shadow-lg shadow-orange-600/40 text-sm sm:text-base"
+                  >
+                    L'occurrence initiale
                   </button>
                 </div>
               </div>

@@ -269,7 +269,6 @@ export async function deleteNonRecurringEvent(db_id: number, connectionId?: stri
 
 export async function deleteSingleOccurrence(id: string, connectionId?: string): Promise<void>{
   console.debug('deleteSingleOccurrence');
-  // Ajouter une exception pour cette occurrence
   try {
     const [dbIdStr, occurrenceDateStr] = id.split('R');
     const dbId = Number(dbIdStr);
@@ -282,6 +281,42 @@ export async function deleteSingleOccurrence(id: string, connectionId?: string):
   } catch (error) {
     console.error('Error deleting single occurrence:', error);
     throw new Error('Failed to delete single occurrence');
+  }
+}
+
+export async function replaceRecurringWithSingle(db_id: number, eventData: FCEventData, connectionId?: string): Promise<FCEvent> {
+  console.debug('replaceRecurringWithSingle');
+  ensureValidEventWindow(eventData.start, eventData.end);
+  try {
+    await db.query('DELETE FROM calendar_events WHERE id = $1', [db_id]);
+    
+    const { title, start, end, extendedProps } = eventData;
+    const { members } = extendedProps;
+
+    const result = await db.query(
+      'INSERT INTO calendar_events (title, "start", "end", members, repeat_weekly) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+      [title, start, end, members, 0]
+    );
+    const newDbId = result.rows[0].id;
+
+    const createdEvent: FCEvent = {
+      id: getFullCalendarId(newDbId, start),
+      title,
+      start,
+      end,
+      extendedProps: {
+        members,
+        repeat_weekly: 0,
+        db_id: newDbId,
+      },
+    };
+
+    notifyClients('update', { connectionId });
+
+    return createdEvent;
+  } catch (error) {
+    console.error('Error replacing recurring event with single:', error);
+    throw new Error('Failed to replace recurring event with single');
   }
 }
 

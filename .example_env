@@ -1,0 +1,2 @@
+RESEND_API_KEY=<the_api_key_here>
+DATABASE_URL=postgres://username:password@host:port

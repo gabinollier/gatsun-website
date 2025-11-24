@@ -13,28 +13,44 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-async function listTables() {
+async function listSchema() {
   const client = await pool.connect();
   try {
-    console.log('Listing tables...');
-    const res = await client.query(`
+    const tablesRes = await client.query(`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public' 
       ORDER BY table_name;
     `);
-    
-    if (res.rows.length === 0) {
+
+    if (tablesRes.rows.length === 0) {
       console.log('No tables found in public schema.');
-    } else {
-      console.table(res.rows);
+      return;
+    }
+
+    for (const { table_name } of tablesRes.rows) {
+      console.log(`\n=== ${table_name} ===`);
+
+      const columnsRes = await client.query(`
+        SELECT 
+          column_name,
+          data_type,
+          is_nullable,
+          column_default,
+          character_maximum_length
+        FROM information_schema.columns 
+        WHERE table_schema = 'public' AND table_name = $1
+        ORDER BY ordinal_position;
+      `, [table_name]);
+
+      console.table(columnsRes.rows);
     }
   } catch (error) {
-    console.error('Error listing tables:', error);
+    console.error('Error listing schema:', error);
   } finally {
     client.release();
     await pool.end();
   }
 }
 
-listTables();
+listSchema();

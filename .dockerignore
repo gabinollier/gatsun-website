@@ -9,3 +9,4 @@ app-data
 .github
 .vscode
 TODO.txt
+.example_env
