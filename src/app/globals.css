@@ -193,3 +193,8 @@ th {
   }
 
 }
+
+.fc .fc-timegrid-now-indicator-line {
+  border: 1.25px solid red;
+  translate: 0px -2px;
+}

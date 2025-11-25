@@ -6,6 +6,9 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import type { DateSelectArg, EventClickArg, EventChangeArg } from '@fullcalendar/core';
 import EventModal from './EventModal';
+import RecurringEventDialog from './RecurringEventDialog';
+import StopRecurringDialog from './StopRecurringDialog';
+import CalendarEventContent from './CalendarEventContent';
 import { FCEvent, FCEventData } from '@/lib/types/db';
 import type { SSEPayload } from '@/lib/sse';
 import { 
@@ -852,9 +855,9 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           firstDay={1}
           slotMinTime='08:00:00'
           slotMaxTime="32:00:00"
-          timeZone='Europe/Paris'
+          now={Date.now()}
           nowIndicator={true}
-          nowIndicatorClassNames={"animate-pulse "}
+          nowIndicatorClassNames={"animate-pulse drop-shadow-sm drop-shadow-red-950"}
           allDaySlot={false}
           events={events}
           select={handleDrag}
@@ -865,57 +868,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           datesSet={handleDatesSet}
           contentHeight="auto"
           expandRows={true}
-          eventContent={(arg) => {
-            const members = arg.event.extendedProps.members;
-            const isRecurring = arg.event.extendedProps.repeat_weekly > 0;
-            const eventStart = arg.event.start ? new Date(arg.event.start) : null;
-            const eventEnd = arg.event.end ? new Date(arg.event.end) : null;
-            const startString = eventStart
-              ? eventStart.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-              : '';
-            const endString = eventEnd
-              ? eventEnd.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-              : '';
-            const durationMinutes = eventStart && eventEnd ? (eventEnd.getTime() - eventStart.getTime()) / 60000 : 0;
-            const isCompactEvent = durationMinutes > 0 && durationMinutes < 45;
-            const isSelected = arg.isSelected;
-
-            return (
-              <div
-                style={{ height: 'calc(100% - 6px)' }}
-                className={`relative translate-y-0.5 px-0.5 py-0.5 overflow-hidden w-full bg-orange-600 hover:bg-orange-700 rounded-lg shadow-lg ring-3 ${isSelected ? 'ring-4' : ''} ring-white outline-2 outline-orange-600 hover:outline-orange-700 sm:px-2 sm:py-1.5 ${isCompactEvent ? 'flex items-center  text-center' : ''}`}
-              >
-                {isRecurring && (
-                  <div className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 w-3 h-3 sm:w-4 sm:h-4 bg-white/30 rounded-full flex items-center justify-center">
-                    <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                      <path d="M3 3v5h5" />
-                      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-                      <path d="M16 16h5v5" />
-                    </svg>
-                  </div>
-                )}
-                {isCompactEvent ? (
-                  <div className="font-semibold break-normal text-[10px] leading-3 sm:leading-4 sm:text-xs md:text-sm">
-                    {arg.event.title}
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex items-center gap-1">
-                      <div className="font-semibold break-normal text-[10px] leading-3 sm:leading-4 sm:text-xs md:text-sm">
-                        {arg.event.title}
-                      </div>
-                    </div>
-                    <div className="mt-0.5 text-[9px] sm:text-[11px] leading-3 sm:leading-4 opacity-90 break-normal">
-                      {members}
-                      <br />
-                      {startString}-{endString}
-                    </div>
-                  </>
-                )}
-              </div>
-            );
-          }}
+          eventContent={(arg) => <CalendarEventContent arg={arg} />}
         />
       </div>
 
@@ -928,111 +881,18 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
         mode={modalMode}
       />
 
-      {showRecurringDialog && (
-        <div 
-          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
-          onClick={closeRecurringDialog}
-        >
-          <div 
-            className="flex min-h-dvh items-start sm:items-center justify-center px-3 py-4 sm:px-4 sm:py-6 overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div 
-              className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-100/10 w-full max-w-lg"
-              style={{ maxHeight: 'calc(100dvh - 1.5rem)' }}
-            >
-              <div className="p-4 sm:p-6">
-                <div className="flex items-start justify-between mb-4 sm:mb-5">
-                  <h3 className="text-lg sm:text-xl font-bold text-white">
-                    {recurringAction === 'update' ? 'Modifier l\'événement récurrent' : 'Supprimer l\'événement récurrent'}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={closeRecurringDialog}
-                    className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
-                    aria-label="Fermer"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                <p className="text-sm sm:text-base text-slate-300 mb-6">
-                  {recurringAction === 'update' 
-                    ? 'Voulez-vous modifier uniquement cette occurrence ou toutes les occurrences ?'
-                    : 'Voulez-vous supprimer uniquement cette occurrence ou toutes les occurrences ?'}
-                </p>
-                <div className="flex flex-row flex-wrap gap-2 sm:gap-3">
-                  <button
-                    onClick={() => handleRecurringDialogChoice('single')}
-                    className="flex-1 min-w-[140px] px-4 py-2.5 sm:px-5 sm:py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-semibold rounded-lg transition duration-200 shadow-lg shadow-slate-900/40 text-sm sm:text-base"
-                  >
-                    Cette occurrence
-                  </button>
-                  <button
-                    onClick={() => handleRecurringDialogChoice('all')}
-                    className="flex-1 min-w-[150px] px-4 py-2.5 sm:px-5 sm:py-3 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-semibold rounded-lg transition duration-200 shadow-lg shadow-orange-600/40 text-sm sm:text-base"
-                  >
-                    Toutes les occurrences
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <RecurringEventDialog
+        isOpen={showRecurringDialog}
+        onClose={closeRecurringDialog}
+        onChoice={handleRecurringDialogChoice}
+        action={recurringAction}
+      />
 
-      {showStopRecurringDialog && (
-        <div 
-          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
-          onClick={closeStopRecurringDialog}
-        >
-          <div 
-            className="flex min-h-dvh items-start sm:items-center justify-center px-3 py-4 sm:px-4 sm:py-6 overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div 
-              className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-100/10 w-full max-w-lg"
-              style={{ maxHeight: 'calc(100dvh - 1.5rem)' }}
-            >
-              <div className="p-4 sm:p-6">
-                <div className="flex items-start justify-between mb-4 sm:mb-5">
-                  <h3 className="text-lg sm:text-xl font-bold text-white">
-                    Arrêter la récurrence
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={closeStopRecurringDialog}
-                    className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
-                    aria-label="Fermer"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                <p className="text-sm sm:text-base text-slate-300 mb-6">
-                  Quelle occurrence voulez-vous conserver ? Toutes les autres occurrences seront supprimées.
-                </p>
-                <div className="flex flex-row flex-wrap gap-2 sm:gap-3">
-                  <button
-                    onClick={() => handleStopRecurringDialogChoice('this')}
-                    className="flex-1 min-w-[140px] px-4 py-2.5 sm:px-5 sm:py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-white font-semibold rounded-lg transition duration-200 shadow-lg shadow-slate-900/40 text-sm sm:text-base"
-                  >
-                    Cette occurrence
-                  </button>
-                  <button
-                    onClick={() => handleStopRecurringDialogChoice('initial')}
-                    className="flex-1 min-w-[150px] px-4 py-2.5 sm:px-5 sm:py-3 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-semibold rounded-lg transition duration-200 shadow-lg shadow-orange-600/40 text-sm sm:text-base"
-                  >
-                    L'occurrence initiale
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <StopRecurringDialog
+        isOpen={showStopRecurringDialog}
+        onClose={closeStopRecurringDialog}
+        onChoice={handleStopRecurringDialogChoice}
+      />
     </>
   );
 }
