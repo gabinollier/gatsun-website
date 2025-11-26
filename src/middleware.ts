@@ -35,6 +35,13 @@ export function middleware(request: NextRequest) {
   //   return NextResponse.redirect(calendarUrl);
   // }
 
+  if (url.pathname.startsWith('/admin') && !url.pathname.startsWith('/admin/login')) {
+    const sessionCookie = request.cookies.get('admin_session');
+    if (!sessionCookie?.value) {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 
