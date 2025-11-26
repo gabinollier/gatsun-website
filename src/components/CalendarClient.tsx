@@ -827,14 +827,6 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
       )}
 
       <div className={`bg-slate-900 motion-opacity-in-100- md:rounded-lg md:shadow-2xl md:shadow-black/50 md:p-6 md:border md:border-slate-100/10 h-full w-full transition-opacity duration-500 ${isInitialLoading ? 'opacity-50 pointer-events-none select-none' : 'opacity-100'}`}>
-        {/* <div className="flex justify-end px-2 mb-2">
-          <button
-            onClick={() => setShowEarlyHours((prev) => !prev)}
-            className="px-3 py-1.5 text-xs font-semibold rounded-full border border-slate-100/30 text-slate-100 hover:bg-slate-800 transition"
-          >
-            {showEarlyHours ? 'Masquer 00h-8h' : 'Afficher 00h-8h'}
-          </button>
-        </div> */}
         <FullCalendar
           ref={calendarRef}
           plugins={[timeGridPlugin, interactionPlugin]}
@@ -855,6 +847,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           firstDay={1}
           slotMinTime='08:00:00'
           slotMaxTime="32:00:00"
+          timeZone="false"
           now={Date.now()}
           nowIndicator={true}
           nowIndicatorClassNames={"animate-pulse drop-shadow-sm drop-shadow-red-950"}

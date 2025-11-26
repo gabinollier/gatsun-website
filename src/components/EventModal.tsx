@@ -22,6 +22,8 @@ interface EventFormState {
 }
 
 function EventToFormState(fcEvent: FCEventData): EventFormState {
+  
+  console.log('Converting FCEventData to EventFormState:', fcEvent);
   const startDate = new Date(fcEvent.start);
   const endDate = new Date(fcEvent.end);
   const diffMs = endDate.getTime() - startDate.getTime();

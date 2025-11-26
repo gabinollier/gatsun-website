@@ -11,8 +11,8 @@ const initDb = async () => {
       CREATE TABLE IF NOT EXISTS calendar_events (
         id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
-        "start" TIMESTAMPTZ NOT NULL, -- ISO 8601 format
-        "end" TIMESTAMPTZ NOT NULL, -- ISO 8601 format
+        "start" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+        "end" TIMESTAMP WITHOUT TIME ZONE NOT NULL,
         members TEXT NOT NULL,
         repeat_weekly INTEGER NOT NULL DEFAULT 0
       );
@@ -21,7 +21,7 @@ const initDb = async () => {
     await client.query(`
       CREATE TABLE IF NOT EXISTS calendar_event_exceptions (
         event_id INTEGER NOT NULL,
-        occurrence_date TIMESTAMPTZ NOT NULL, -- Date of the affected occurrence (ISO 8601 format)
+        occurrence_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, 
         CONSTRAINT pk_event_exception PRIMARY KEY (event_id, occurrence_date),
         FOREIGN KEY (event_id) REFERENCES calendar_events(id) ON DELETE CASCADE
       );

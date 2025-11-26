@@ -12,20 +12,21 @@ export default function CalendarEventContent({ arg }: CalendarEventContentProps)
   const eventStart = arg.event.start ? new Date(arg.event.start) : null;
   const eventEnd = arg.event.end ? new Date(arg.event.end) : null;
   const startString = eventStart
-    ? eventStart.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' })
+    ? eventStart.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })
     : '';
   const endString = eventEnd
-    ? eventEnd.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' })
+    ? eventEnd.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })
     : '';
   const durationMinutes =
     eventStart && eventEnd ? (eventEnd.getTime() - eventStart.getTime()) / 60000 : 0;
   const isCompactEvent = durationMinutes > 0 && durationMinutes < 45;
   const isSelected = arg.isSelected;
+  const hasPassed = eventEnd ? eventEnd.getTime() < Date.now() : false;
 
   return (
     <div
       style={{ height: 'calc(100% - 6px)' }}
-      className={`relative translate-y-0.5 px-0.5 py-0.5 overflow-hidden w-full bg-orange-600 hover:bg-orange-700 rounded-lg shadow-lg ring-3 ${isSelected ? 'ring-4' : ''} ring-white outline-2 outline-orange-600 hover:outline-orange-700 sm:px-2 sm:py-1.5 ${isCompactEvent ? 'flex items-center  text-center' : ''}`}
+      className={`${hasPassed ? 'opacity-50 saturate-20 brightness-80 line-through decoration-1' : ''} relative translate-y-0.5 px-0.5 py-0.5 overflow-hidden w-full bg-orange-600 hover:bg-orange-700 rounded-lg shadow-lg ring-3 ${isSelected ? 'ring-4' : ''} ring-white outline-2 outline-orange-600 hover:outline-orange-700 sm:px-2 sm:py-1.5 ${isCompactEvent ? 'flex items-center  text-center' : ''}`}
     >
       {isRecurring && (
         <div className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 w-3 h-3 sm:w-4 sm:h-4 bg-white/30 rounded-full flex items-center justify-center">
