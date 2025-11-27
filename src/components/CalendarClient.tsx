@@ -22,6 +22,7 @@ import {
   deleteAllOccurrences,
   replaceRecurringWithSingle
 } from '@/actions/eventActions';
+import { date } from 'zod';
 
 /*
   Explications :
@@ -813,6 +814,12 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
     setPendingOriginalEvent(null);
   };
 
+  const localNow = (): number => {
+    const now = new Date();
+    const localOffset = now.getTimezoneOffset(); // Paris is UTC+2 (120 minutes)
+    return now.getTime() - (localOffset * 60 * 1000);
+  };
+
   return (
     <>
       <div className={`${isSyncing ? "opacity-100 duration-0" : "opacity-0 duration-300"} transition-opacity  fixed bottom-6 right-6 z-[70] flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/90 text-white text-sm shadow-2xl border border-slate-100/20`}>
@@ -848,7 +855,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           slotMinTime='08:00:00'
           slotMaxTime="32:00:00"
           timeZone="false"
-          now={Date.now()}
+          now={localNow()}
           nowIndicator={true}
           nowIndicatorClassNames={"animate-pulse drop-shadow-sm drop-shadow-red-950"}
           allDaySlot={false}

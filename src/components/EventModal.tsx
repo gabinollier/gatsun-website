@@ -22,8 +22,6 @@ interface EventFormState {
 }
 
 function EventToFormState(fcEvent: FCEventData): EventFormState {
-  
-  console.log('Converting FCEventData to EventFormState:', fcEvent);
   const startDate = new Date(fcEvent.start);
   const endDate = new Date(fcEvent.end);
   const diffMs = endDate.getTime() - startDate.getTime();
@@ -149,13 +147,20 @@ export default function EventModal({
   };
 
   const formatDatetimeLocal = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
 
     return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const parseDatetimeLocalAsUTC = (value: string) => {
+    const [datePart, timePart] = value.split('T');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hours, minutes] = timePart.split(':').map(Number);
+    return new Date(Date.UTC(year, month - 1, day, hours, minutes));
   };
 
   if (!isOpen) return null;
@@ -241,7 +246,7 @@ export default function EventModal({
                   type="datetime-local"
                   id="start"
                   value={formatDatetimeLocal(formState.start)}
-                  onChange={(e) => setFormState({...formState, start: new Date(e.target.value)})}
+                  onChange={(e) => setFormState({...formState, start: parseDatetimeLocalAsUTC(e.target.value)})}
                   className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-slate-800 border border-slate-700 rounded-lg text-sm sm:text-base text-white focus:outline-none focus:ring-2 focus:ring-orange-600 focus:border-transparent"
                   required
                 />
