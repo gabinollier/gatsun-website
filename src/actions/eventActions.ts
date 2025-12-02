@@ -14,6 +14,7 @@ function getFullCalendarId(dbId: number, startDate: Date): string {
 }
 
 const MAX_EVENT_DURATION_MS = 24 * 60 * 60 * 1000;
+const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
 
 function ensureValidEventWindow(startInput: Date, endInput: Date): void {
   const start = new Date(startInput);
@@ -33,6 +34,8 @@ export async function getEvents(rangeFrom: string, rangeTo: string): Promise<FCE
   try {
     const requestFrom = rangeFrom;
     const requestTo = rangeTo;
+    const requestFromTime = Date.parse(requestFrom);
+    const requestToTime = Date.parse(requestTo);
 
     const dbEventsResult = await db.query(
       'SELECT * FROM calendar_events WHERE ("start" < $1 AND "end" > $2 OR repeat_weekly = 1)',
@@ -49,15 +52,31 @@ export async function getEvents(rangeFrom: string, rangeTo: string): Promise<FCE
       if (dbEvent.repeat_weekly) {
         const eventStart = new Date(dbEvent.start);
         const eventEnd = new Date(dbEvent.end);
-        const occurrenceStart = new Date(eventStart);
-        const occurrenceEnd = new Date(eventEnd);
-        while (occurrenceStart.toISOString() < requestTo) {
-          if (occurrenceEnd.toISOString() > requestFrom) {
+        const baseStartMs = eventStart.getTime();
+        const baseEndMs = eventEnd.getTime();
+
+        let occurrenceIndex = 0;
+        if (requestFromTime > baseEndMs) {
+          const weeksSinceStart = Math.floor((requestFromTime - baseEndMs) / WEEK_IN_MS);
+          occurrenceIndex = Math.max(0, weeksSinceStart);
+        }
+
+        while (true) {
+          const occurrenceStartMs = baseStartMs + occurrenceIndex * WEEK_IN_MS;
+          if (occurrenceStartMs >= requestToTime) {
+            break;
+          }
+
+          const occurrenceEndMs = baseEndMs + occurrenceIndex * WEEK_IN_MS;
+
+          if (occurrenceEndMs > requestFromTime) {
+            const startDate = new Date(occurrenceStartMs);
+            const endDate = new Date(occurrenceEndMs);
             fcEvents.push({
-              id: getFullCalendarId(dbEvent.id, occurrenceStart),
+              id: getFullCalendarId(dbEvent.id, startDate),
               title: dbEvent.title,
-              start: new Date(occurrenceStart),
-              end: new Date(occurrenceEnd),
+              start: startDate,
+              end: endDate,
               extendedProps: {
                 members: dbEvent.members,
                 repeat_weekly: dbEvent.repeat_weekly,
@@ -65,8 +84,8 @@ export async function getEvents(rangeFrom: string, rangeTo: string): Promise<FCE
               },
             });
           }
-          occurrenceStart.setDate(occurrenceStart.getDate() + 7);
-          occurrenceEnd.setDate(occurrenceEnd.getDate() + 7);
+
+          occurrenceIndex += 1;
         }
 
 

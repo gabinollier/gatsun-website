@@ -124,6 +124,7 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
 
         try {
           const newEvents = await getEvents(rangeStart.toISOString(), rangeEnd.toISOString());
+
           setEvents(newEvents);
           for (let i = -2; i <= 2; i++) {
             const weekStart = new Date(centerDate);
@@ -153,6 +154,8 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
 
           try {
             const newEvents: FCEvent[] = await getEvents(weekStart.toISOString(), weekEnd.toISOString());
+
+            // print new events start hours
             setEvents((previous) => {
               const filtered = previous.filter(event => {
                 const eventStart = new Date(event.start);
