@@ -22,7 +22,6 @@ import {
   deleteAllOccurrences,
   replaceRecurringWithSingle
 } from '@/actions/eventActions';
-import { date } from 'zod';
 
 /*
   Explications :
@@ -788,7 +787,6 @@ export default function CalendarClient({ onViewerCountChange }: CalendarClientPr
           );
           if (!originalDbEvent) return;
           
-          const originalDuration = originalDbEvent.end.getTime() - originalDbEvent.start.getTime();
           const newDuration = pendingEventData.end.getTime() - pendingEventData.start.getTime();
           
           eventToCreate = {

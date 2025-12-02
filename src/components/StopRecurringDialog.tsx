@@ -67,7 +67,7 @@ export default function StopRecurringDialog({
                 onClick={() => onChoice('initial')}
                 className="flex-1 min-w-[150px] px-4 py-2.5 sm:px-5 sm:py-3 bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-semibold rounded-lg transition duration-200 shadow-lg shadow-orange-600/40 text-sm sm:text-base"
               >
-                L'occurrence initiale
+                L&apos;occurrence initiale
               </button>
             </div>
           </div>
