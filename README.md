@@ -49,6 +49,14 @@ Le nom de domaine est géré par OVH.
 - Il y a une table `calendar_event_exceptions`. Si une occurence est présente dans cette table, elle ne sera pas affichée.
 - Cela permet l'édition/suppression/déplacement d'une seule occurence de l'évènement.
 
+### Dashboard admin
+
+- Accessible via `/admin`. La page racine redirige automatiquement vers `/admin/login` si aucun cookie `admin_session` valide n’est présent et vers `/admin/dashboard` lorsqu’une session signée est détectée.
+- Authentification par mot de passe unique : l’action serveur `loginAction` compare le mot de passe au hash `ADMIN_PASSWORD_HASH` (bcrypt). En cas de succès, `createSession` signe un cookie HMAC avec `ADMIN_SESSION_SECRET` valable 1 heure. `logoutAction` supprime simplement ce cookie.
+- L’écran `/admin/dashboard` charge le JSON des tarifs via `getPricingData` qui lit `site_settings.key = 'pricing_data'`. Le JSON parsé est injecté dans `PricingCards` pour offrir une prévisualisation live identique au site public.
+- L’édition s’effectue directement dans un textarea (JSON brut). Un clic sur « Enregistrer » affiche une modale de confirmation avant d’appeler `updatePricingData`, qui revérifie la session, revalide la structure (`services[]` + `footnotes[]`) puis persiste le JSON en base.
+- En cas d’erreur serveur ou de JSON invalide, un message est affiché ; les succès rafraîchissent simplement la notification « Tarifs mis à jour ». Aucun rafraîchissement complet n’est nécessaire.
+
 ### Middleware
 
 - `src/middleware.ts` réécrit toute requête destinée à un sous-domaine `calendar.*` vers `/calendar` et ajoute `X-Robots-Tag: noindex, nofollow` pour éviter l’indexation par les moteurs de recherche du calendrier interne.
@@ -62,6 +70,8 @@ Créez un `.env` en fournissez ces variables :
 | --- | --- |
 | `RESEND_API_KEY` | Jeton API Resend ; indispensable pour envoyer les emails de contact. |
 | `DATABASE_URL` | URL de connexion à la base de données PostgreSQL. Exemple : `postgres://user:password@host:port` |
+| `ADMIN_PASSWORD_HASH` | Hash bcrypt du mot de passe du dashboard admin. Générer via `node scripts/hash-password.js` et copier la valeur proposée. |
+| `ADMIN_SESSION_SECRET` | Clé utilisée pour signer le cookie `admin_session`. N'importe quelle chaîne longue et secrète fonctionne. |
 
 ## Lancer le projet en local
 
@@ -74,6 +84,3 @@ npm run dev
 
 - `RESEND_API_KEY` peut rester vide en dev : le formulaire affichera une erreur d’envoi mais le reste du site fonctionne.
 
-## Evolutions possibles
-
-- Petit dashboard pour pouvoir changer les tarifs affichés sur le site vitrine sans avoir à modifier le code.
