@@ -1,3 +1,7 @@
+⚠️ Ce repo a été déplacé sur le Gitlab du Service Informatique Associatif (SIA) qui en assure l'hébergement : 
+https://gitlab.com/sia-insa-lyon/va/gatsun
+
+
 # Gatsun website
 
 ## A propos
