@@ -1,0 +1,4 @@
+RESEND_API_KEY=<the_api_key_here>
+DATABASE_URL=postgres://username:password@host:port
+ADMIN_PASSWORD_HASH=<bcrypt_hash_here>
+ADMIN_SESSION_SECRET=<random_secret_key_here>

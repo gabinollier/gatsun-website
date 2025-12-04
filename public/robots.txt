@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+User-agent: *
+Disallow: /calendar/
+
+Host: gatsun.fr
+Sitemap: https://gatsun.fr/sitemap.xml
